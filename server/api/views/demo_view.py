@@ -7,3 +7,7 @@ from rest_framework import status
 def hello(request):
     return Response({"message": "Hello from server."},
                     status=status.HTTP_200_OK)
+
+
+
+
