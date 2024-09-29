@@ -11,6 +11,9 @@ from .managers import UserManager
 class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+    objects = UserManager()
     password = models.CharField(max_length=255)
     location_lat = models.FloatField(default=0.00)  # Latitude of the user's location
     location_lon = models.FloatField(default=0.00)  # Longitude of the user's location
