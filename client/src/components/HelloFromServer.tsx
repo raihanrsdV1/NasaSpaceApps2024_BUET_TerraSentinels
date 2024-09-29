@@ -14,7 +14,7 @@ const HelloFromServer = () => {
   }, []);
   return (
     <div>
-      <p className="text-5xl text-center m-2 p-2">{message}</p>
+      <p className="text-xl font-bold text-center m-2 p-2">{message}</p>
     </div>
   );
 };

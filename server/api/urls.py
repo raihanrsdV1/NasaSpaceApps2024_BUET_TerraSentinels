@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
 
 from .views.demo_view import hello
 from .views.community import *
+from .views.weather_data import *
 
 urlpatterns = [
     # auth
@@ -15,6 +16,9 @@ urlpatterns = [
     
     # demo
     path("hello/", hello),
+    
+    # weather data
+    path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
 
     #  community
     path('post/', post_community, name='post_community'),  # Create a post
