@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .managers import UserManager
 
+
 # Create your models here.
 
 
@@ -133,6 +134,17 @@ class CommentRating(models.Model):
     def __str__(self):
         return f'{self.user.username} rated {self.comment.id} with {self.value}'
 
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True, blank=True)
+    is_seen = models.BooleanField(default=False)
+    is_alert = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.content[:50]  # Display a snippet of the notification
 
 
 ### Community features ###

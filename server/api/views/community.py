@@ -1,8 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from ..models import Post, Comment, Alert, Tag, User, Rating
+from ..models import *
 from ..serializers import *
+from .community_helper import *
+from django.utils import timezone
 
 @api_view(['POST'])
 def post_community(request):
@@ -372,8 +374,27 @@ def add_alert(request):
     
     # Validate the serializer with the data
     if serializer.is_valid():
-        serializer.save()  # Save the alert instance
-        return Response({"message": "Alert created successfully.", "alert": serializer.data},
+        alert = serializer.save()  # Save the alert instance
+        
+        # Get users within 50KM radius
+        users_nearby = get_users_within_radius(
+            alert.alert_location_lat, 
+            alert.alert_location_lon,
+            radius_km=50  # You can change the radius as needed
+        )
+        
+        # Create notifications for users within the radius
+        for user in users_nearby:
+            Notification.objects.create(
+                user=user,
+                content=f"An alert has been created near your location: {alert.post.title}",
+                post=alert.post,
+                created_at=timezone.now(),
+                is_alert=True,
+                is_seen=False
+            )
+        
+        return Response({"message": "Alert created and notifications sent.", "alert": serializer.data},
                         status=status.HTTP_201_CREATED)
     
     # If the data is invalid, return a 400 response with the errors
@@ -491,3 +512,11 @@ def get_all_symptoms(request):
     symptoms = Symptom.objects.all()
     serializer = SymptomSerializer(symptoms, many=True)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
