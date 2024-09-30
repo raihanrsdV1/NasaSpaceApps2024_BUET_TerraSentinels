@@ -87,3 +87,8 @@ class DiseaseStatisticsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DiseaseStatistics
         fields = '__all__'
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = '__all__'
