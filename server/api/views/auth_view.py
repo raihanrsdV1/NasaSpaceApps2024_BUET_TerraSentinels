@@ -33,43 +33,34 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @permission_classes([AllowAny])
 def register(request):
     serializer = UserRegistrationSerializer(data=request.data)
+    
     if serializer.is_valid():
-        first_name = serializer.validated_data["first_name"]
-        last_name = serializer.validated_data["last_name"]
-        email = serializer.validated_data["email"]
-        password = serializer.validated_data["password"]
-
-        username = f"{first_name.lower()}.{last_name.lower()}"
+        first_name = serializer.validated_data['first_name']
+        last_name = serializer.validated_data['last_name']
+        
+        # Generate unique username
+        base_username = f"{first_name.lower()}.{last_name.lower()}"
+        username = base_username
         num = 1
         while User.objects.filter(username=username).exists():
-            username = f"{first_name.lower()}.{last_name.lower()}.{num}"
+            username = f"{base_username}{num}"
             num += 1
 
-        if len(password) < 8:
-            return Response(
-                {"error": "Password must be at least 8 characters"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if not email or not password or not first_name or not last_name:
-            return Response(
-                {"error": "Please provide all fields"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        # Save the user with latitude, longitude, and phone number
+        user = serializer.save(username=username)
 
-        User.objects.create_user(
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
+        # Serialize the created user to include in the response
+        user_data = UserRegistrationSerializer(user).data
+        
         return Response({
-            "message": "User created successfully"
+            "message": "User created successfully",
+            "user": user_data,
+            "username": username  # Add the determined username to the response
         }, status=status.HTTP_201_CREATED)
-
-    if serializer.errors["email"][0]:
-        return Response(
-            {"error": serializer.errors["email"][0]}, status=status.HTTP_400_BAD_REQUEST
-        )
-
+    
     return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+

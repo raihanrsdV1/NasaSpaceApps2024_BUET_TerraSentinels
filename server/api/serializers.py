@@ -3,21 +3,28 @@ from rest_framework import serializers
 
 
 
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, min_length=8)
+    phone_no = serializers.CharField(required=True)
+    location_lat = serializers.FloatField(required=True)
+    location_lon = serializers.FloatField(required=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name',
-                  'email', 'password']
+        fields = ['first_name', 'last_name', 'email', 'password', 'phone_no', 'location_lat', 'location_lon']
 
-        def create(self, validated_data):
-            password = validated_data.pop('password')
-            user = User(**validated_data)
-            user.set_password(password)
-            user.save()
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("A user with this email already exists.")
+        return value
 
-            return user
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
 
 
 
@@ -92,3 +99,6 @@ class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
+
+
+
