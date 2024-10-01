@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect, useRef } from 'react';
 import HelloFromServer from "./components/HelloFromServer";
 import WeatherData2DGraph from "./components/WeatherData2dGraph";
 import CommunityHome from './components/Community/CommunityHome';
+import CommunityRegister from './components/Community/CommunityRegister';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +28,7 @@ const App: React.FC = () => {
             label="Surface Temperature"
           />} />
           <Route path="/community" element={<CommunityHome />} />
+          <Route path="/register" element={<CommunityRegister />} />
         </Routes>
         
       </Router>

@@ -13,6 +13,7 @@ class User(AbstractUser):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(unique=True)
     USERNAME_FIELD = "email"
+    phone_no = models.CharField(max_length=15, blank=True)
     REQUIRED_FIELDS = []
     objects = UserManager()
     password = models.CharField(max_length=255)
@@ -22,6 +23,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
     is_expert = models.BooleanField(default=False)  # Expert or Regular User
+
 
     def __str__(self):
         return self.username
