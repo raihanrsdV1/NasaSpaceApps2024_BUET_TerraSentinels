@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import axiosInstance from "../utils/AxiosSetup";
-import AuthContext from "../context/authContext";
+import AuthContext from "../context/AuthContext";
 import { AxiosInstance } from "axios";
 import { AuthTokens } from "../types/types";
 
