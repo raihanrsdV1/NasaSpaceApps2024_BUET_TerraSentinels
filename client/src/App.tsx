@@ -3,6 +3,7 @@ import HelloFromServer from "./components/HelloFromServer";
 import WeatherData2DGraph from "./components/WeatherData2dGraph";
 import CommunityHome from './components/Community/CommunityHome';
 import CommunityRegister from './components/Community/CommunityRegister';
+import CommunityLogin from './components/Community/CommunityLogin';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,6 +30,7 @@ const App: React.FC = () => {
           />} />
           <Route path="/community" element={<CommunityHome />} />
           <Route path="/register" element={<CommunityRegister />} />
+          <Route path="/login" element={<CommunityLogin />} />
         </Routes>
         
       </Router>

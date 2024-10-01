@@ -44,7 +44,7 @@ const Register: React.FC = () => {
             console.log("Response received:", res.data);
             const username = res.data.username;
             toast.success(`Registration successful! Your username is: ${username}`);
-            navigate(`/email-not-verified/${res.data.user.email}`, { replace: true });
+            navigate(`/login`, { replace: true });
         } catch (error) {
             console.error("Error during registration:", error);
             toast.error("Registration failed"); // Generic error message
