@@ -86,3 +86,27 @@ export interface TeamData {
 	team_puzzle_order: number[];
 	team_password: string;
 }
+
+
+// src/types/types.ts
+
+export interface Filters {
+    content: string;
+    title: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    tags: string[];
+    isAlert: boolean | null;
+}
+
+// If Post is also defined, keep it here for clarity
+export interface Post {
+    id: number;
+    title: string;
+    content: string;
+    created_at: string; // or Date if you parse it
+    tag_names: string[]; // or Tag[] if you have a Tag type
+    // Add other fields as necessary
+}
+
+  

@@ -29,14 +29,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 
-
 class PostSerializer(serializers.ModelSerializer):
-    # This ensures we use the user ID in the request to link the user
-    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)  # Use tag IDs for writing
+    tag_names = serializers.SerializerMethodField(read_only=True)  # Use tag names for reading
 
     class Meta:
         model = Post
-        fields = '__all__'
+        fields = ['id', 'user', 'title', 'content', 'created_at', 'tags', 'tag_names']  # Include both tag IDs and names
+
+    def get_tag_names(self, obj):
+        return [tag.name for tag in obj.tags.all()]  # Return tag names
 
 
 # Comment Serializer

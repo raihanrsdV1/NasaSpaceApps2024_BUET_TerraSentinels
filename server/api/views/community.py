@@ -518,5 +518,70 @@ def get_all_symptoms(request):
 
 
 
+@api_view(['GET'])
+def filter_posts(request):
+    # Get filter parameters from request
+    title = request.GET.get('title', None)
+    content = request.GET.get('content', None)
+    start_date = request.GET.get('start_date', None)
+    end_date = request.GET.get('end_date', None)
+    tag_names = request.GET.get('tags', None)  # Expecting tags as a comma-separated string
+    is_alert = request.GET.get('is_alert', None)
+
+    # Start with all posts
+    queryset = Post.objects.all()
+
+    # Substring search in title
+    if title:
+        queryset = queryset.filter(title__icontains=title)
+
+    # Substring search in content
+    if content:
+        queryset = queryset.filter(content__icontains=content)
+
+    # Date filtering
+    print(start_date)
+    print(end_date)
+    if start_date and end_date:
+        queryset = queryset.filter(created_at__range=[start_date, end_date])
+    elif start_date:
+        queryset = queryset.filter(created_at__gte=start_date)
+    elif end_date:
+        queryset = queryset.filter(created_at__lte=end_date)
+
+    # Tag filtering
+    if tag_names:
+        tag_list = tag_names.split(',')  # Split the comma-separated string into a list
+        tags = Tag.objects.filter(name__in=tag_list)
+        queryset = queryset.filter(tags__in=tags).distinct()
+
+    # Check if post is an alert
+    if is_alert and is_alert.lower() == 'true':
+        queryset = queryset.filter(alert__isnull=False)  # Post is an alert
+    elif is_alert and is_alert.lower() == 'false':
+        queryset = queryset.filter(alert__isnull=True)  # Post is not an alert
+
+    # Serialize and return the filtered queryset (assuming you have a serializer for Post)
+    serializer = PostSerializer(queryset, many=True)
+    return Response(serializer.data)
 
 
+
+
+
+@api_view(['GET'])
+def post_date_range(request):
+    try:
+        # Query the Post model for the minimum and maximum created_at dates
+        oldest_post = Post.objects.earliest('created_at')
+        newest_post = Post.objects.latest('created_at')
+
+        # Prepare the response data
+        date_range = {
+            'oldest_post_date': oldest_post.created_at,
+            'newest_post_date': newest_post.created_at,
+        }
+        return Response(date_range, status=status.HTTP_200_OK)
+
+    except Post.DoesNotExist:
+        return Response({'error': 'No posts found'}, status=status.HTTP_404_NOT_FOUND)

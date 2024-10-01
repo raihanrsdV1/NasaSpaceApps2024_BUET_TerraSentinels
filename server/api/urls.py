@@ -66,4 +66,8 @@ urlpatterns = [
     path('disease-statistics/all/', get_all_disease_statistics, name='get_all_disease_statistics'),
 
     path('symptoms/all/', get_all_symptoms, name='get_all_symptoms'),
+
+
+    path('posts/filter/', filter_posts, name='post-filter'),
+    path('posts/date-range/', post_date_range, name='post-date-range'),
 ]
