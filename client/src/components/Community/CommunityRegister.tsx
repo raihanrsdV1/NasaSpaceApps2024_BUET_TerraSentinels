@@ -39,9 +39,6 @@ const Register: React.FC = () => {
                 phone_no: formData.phone_no,
                 location_lat: selectedLat,
                 location_lon: selectedLng,
-            }, {
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true,
             });
 
             console.log("Response received:", res.data);
