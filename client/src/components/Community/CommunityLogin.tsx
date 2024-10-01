@@ -2,94 +2,90 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../../utils/AxiosSetup"; // Adjust path if necessary
+import brand from "../../brand.png"; // Adjust path if necessary
 
-const Login = () => {
+const Login: React.FC = () => {
     const navigate = useNavigate();
-    const [credentials, setCredentials] = useState({
+    const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleChange = (e : any) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setCredentials((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // Prevent default form submission
         setIsSubmitting(true); // Disable the button
 
         try {
-            const res = await axios.post("/token/", {
-                email: credentials.email,
-                password: credentials.password,
+            const res = await axios.post("login/", {
+                email: formData.email,
+                password: formData.password,
             });
 
-            // Assuming the response contains access and refresh tokens
-            const { access, refresh } = res.data;
-
-            // Store tokens in local storage
-            localStorage.setItem("access_token", access);
-            localStorage.setItem("refresh_token", refresh);
-
-            toast.success("Login successful!"); // Show success message
-            navigate("/"); // Redirect to home or any other page
+            toast.success("Login successful!");
+            navigate("/dashboard"); // Adjust route based on your app
         } catch (error) {
-            console.error("Error during login:", error); // Log error for debugging
-            toast.error("Login failed. Please check your credentials."); // Show error message
+            toast.error("Login failed. Please check your credentials.");
         } finally {
             setIsSubmitting(false); // Re-enable the button
         }
     };
 
     return (
-        <div className="h-screen flex items-center justify-center bg-gray-100">
-            <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-                <h2 className="text-2xl font-semibold text-center">Login</h2>
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700" htmlFor="email">
-                            Email
-                        </label>
+        <div className="h-screen bg-gradient-to-r flex flex-col items-center justify-start">
+            {/* Header Section with Brand Name and Logo */}
+            <div className="w-full flex flex-col items-center mt-6 mb-8">
+                <img src={brand} alt="Brand Logo" className="h-16 mb-4" /> {/* Adjust path and size */}
+                <h2 className="text-3xl font-bold text-black">
+                    Welcome back to our farming community!
+                </h2>
+            </div>
+
+            <div className="max-w-4xl w-1/3 bg-white rounded-lg shadow-2xl p-6 flex flex-col md:flex-row gap-10">
+                
+                {/* Form Section */}
+                <div className="flex-grow">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <input
                             type="email"
                             name="email"
-                            id="email"
-                            value={credentials.email}
+                            placeholder="Email"
+                            value={formData.email}
                             onChange={handleChange}
+                            className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
                             required
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         />
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-gray-700" htmlFor="password">
-                            Password
-                        </label>
                         <input
                             type="password"
                             name="password"
-                            id="password"
-                            value={credentials.password}
+                            placeholder="Password"
+                            value={formData.password}
                             onChange={handleChange}
+                            className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
                             required
-                            className="mt-1 block w-full border border-gray-300 rounded-md p-2"
                         />
-                    </div>
-                    <div className="mb-4">
-                        <button
-                            type="submit"
-                            className="w-full bg-blue-500 text-white p-2 rounded-md"
-                            disabled={isSubmitting}
-                        >
-                            {isSubmitting ? "Logging in..." : "Login"}
-                        </button>
-                    </div>
-                </form>
-                <div className="text-center">
-                    <Link to="/register" className="text-blue-500 hover:underline">
-                        Don't have an account? Register
-                    </Link>
+
+                        <div className="flex flex-col items-center justify-center mt-6">
+                            <button
+                                className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+                                type="submit"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Logging in..." : "Login"}
+                            </button>
+                            <div className="mb-4">
+                                Don't have an account yet?{" "}
+                                <Link to="/register" className="font-medium text-green-600 hover:underline">
+                                    Register
+                                </Link>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
