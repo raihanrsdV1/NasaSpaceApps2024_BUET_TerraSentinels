@@ -18,7 +18,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/" element={<HelloFromServer />} />
-          <Route path="/weather" element={<WeatherData2DGraph
+          <Route path="/data" element={<WeatherData2DGraph
             latitude={37.7749}
             longitude={-122.4194}
             startDate="20210101"
