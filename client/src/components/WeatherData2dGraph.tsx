@@ -2,6 +2,8 @@
 import { LineChart } from "@mui/x-charts";
 import { useState, useEffect } from "react";
 import axios from "../utils/AxiosSetup";
+import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 
 // pass the following for different data
 // TS - Surface Temperature
@@ -52,19 +54,25 @@ const WeatherData2DGraph: React.FC<WeatherDataProps> = ({
   }, [latitude, longitude, startDate, endDate, parameter]);
 
   return (
-    <div className="flex justify-center items-center">
-      <LineChart
-        xAxis={[{ data: dateData }]}
-        series={[
-          {
-            data: weatherData,
-            label: label,
-            area: true,
-          },
-        ]}
-        width={1000}
-        height={500}
-      />
+    <div className="flex">
+      <Navbar />
+      <Sidebar />
+      <div className="flex w-full pt-16">
+        <div className="w-5/6 p-6">
+          <LineChart
+            xAxis={[{ data: dateData }]}
+            series={[
+              {
+                data: weatherData,
+                label: label,
+                area: true,
+              },
+            ]}
+            width={1000}
+            height={500}
+          />
+        </div>
+      </div>
     </div>
   );
 };
