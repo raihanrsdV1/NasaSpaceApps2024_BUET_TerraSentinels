@@ -107,10 +107,9 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
             ))}
           </div>
 
-          {/* Entire content to be downloaded */}
-          <div className="w-full mb-6 content-to-download">
+          <div className="w-full mb-6 content-to-download flex">
             {/* Graph Centered Above Inputs */}
-            <div className="w-full chart-container mb-6 flex justify-center">
+            <div className="w-3/4 chart-container mb-6 flex justify-center">
               <LineChart
                 xAxis={[{ data: dateData }]}
                 series={[
@@ -126,16 +125,50 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
               />
             </div>
 
-            {/* Download Info */}
-            <div className="flex justify-center mb-4">
-              <p className="mr-4">Start Date: {startDate?.toLocaleDateString()}</p>
-              <p className="mr-4">End Date: {endDate?.toLocaleDateString()}</p>
-              <p className="mr-4">Latitude: {latitude}</p>
-              <p>Longitude: {longitude}</p>
-              <p className="ml-4 font-bold">Max: {maxValue} {parameterStyles[selectedParameter].unit}</p>
-              <p className="ml-4 font-bold">Min: {minValue} {parameterStyles[selectedParameter].unit}</p>
+            {/* Parameters on the Right Side */}
+            <div className="w-1/4 p-4 bg-gray-100 rounded ml-4">
+              <h2 className="text-lg font-semibold mb-2">Parameter Information</h2>
+              <table className="table-auto">
+                <tbody>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Start Date</td>
+                    <td className="border px-4 py-2">{startDate?.toLocaleDateString()}</td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">End Date</td>
+                    <td className="border px-4 py-2">{endDate?.toLocaleDateString()}</td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Latitude</td>
+                    <td className="border px-4 py-2">{latitude}</td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Longitude</td>
+                    <td className="border px-4 py-2">{longitude}</td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Max</td>
+                    <td className="border px-4 py-2">
+                      {maxValue} {parameterStyles[selectedParameter].unit}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Min</td>
+                    <td className="border px-4 py-2">
+                      {minValue} {parameterStyles[selectedParameter].unit}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Unit</td>
+                    <td className="border px-4 py-2">{parameterStyles[selectedParameter].unit}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
+
+          {/* Extra Space Below */}
+          <div className="mb-8" /> {/* Adjust the value as needed for spacing */}
 
           {/* Date Selection */}
           <div className="flex justify-center mb-4">
