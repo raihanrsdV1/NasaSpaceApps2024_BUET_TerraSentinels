@@ -3,18 +3,20 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from django.http import JsonResponse
 
 import requests
 import folium
+from folium import Map
 import math
 from geopy.distance import geodesic 
 import numpy as np
 
-OSM_API_URL = "http://overpass-api.de/api/interprete"
+
 
 
 def get_specific_water_sources2(lat, lon, radius=1000):
-    
+    OSM_API_URL = "http://overpass-api.de/api/interpreter"
     overpass_query = f"""
     [out:json];
     (
@@ -107,16 +109,29 @@ def get_specific_water_sources1(lat, lon, radius=1000):
     
     return water_sources
 
-def plot_water_sources(lat, lon, water_sources):
+def produce_map(lat, lon, water_sources):
     water_map = folium.Map(location=[lat, lon], zoom_start=13)
     
     folium.Marker([lat, lon], tooltip="Your Location", icon=folium.Icon(color="blue")).add_to(water_map)
     
     for water_lat, water_lon in water_sources:
         folium.Marker([water_lat, water_lon], tooltip="Water Source", icon=folium.Icon(color="green")).add_to(water_map)
+    return water_map
+    #water_map.save("water_sources_map3.html")
+    #print("Map saved as 'water_sources_map3.html'.")
+
+def produce_map2(lat, lon, water_sources):
+    water_map = folium.Map(location=[lat, lon], zoom_start=13)
     
-    water_map.save("water_sources_map3.html")
-    print("Map saved as 'water_sources_map3.html'.")
+    folium.Marker([lat, lon], tooltip="Your Location", icon=folium.Icon(color="blue")).add_to(water_map)
+    
+    for water_lat, water_lon in water_sources:
+        folium.Marker([water_lat, water_lon], tooltip="Water Source", icon=folium.Icon(color="green")).add_to(water_map)
+    figure = folium.Figure()
+    figure.add_child(water_map)
+    return figure
+
+
 
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371 
@@ -166,20 +181,27 @@ def cluster_and_reduce_points(water_sources, threshold_distance=0.1):
 
     return clustered_sources
 
-def get_water_resource_data(long, lat, max_distance=1):  #max_distance in kilometers
+@api_view(['GET'])
+def get_water_data(request, lat, long, max_distance=1):  #max_distance in kilometers
+    print("long: ", long)
+    lat= float(lat)
+    long= float(long)
     water_sources1 = get_specific_water_sources1(lat, long, max_distance*1000)
     water_sources2 = get_specific_water_sources2(lat, long, max_distance*1000)
     combined_water_sources = set(water_sources1 + water_sources2)
     nearby_water_sources = filter_nearby_points(lat, long, combined_water_sources, max_distance)
     reduced_water_sources = cluster_and_reduce_points(nearby_water_sources, threshold_distance=0.1)
-    #print(len(nearby_water_sources))
-    #print(len(reduced_water_sources))
+    print(len(nearby_water_sources))
+    print(len(reduced_water_sources))
     
     if reduced_water_sources:
-        print("Nearby Water Sources (rivers, canals, wells, ponds, reservoirs):")
+        #print("Nearby Water Sources (rivers, canals, wells, ponds, reservoirs):")
         #for idx, (lat, lon) in enumerate(nearby_water_sources):
             #print(f"{idx+1}. Latitude: {lat}, Longitude: {lon}")
-        plot_water_sources(lat, long, reduced_water_sources)
+        #return produce_map(lat, long, reduced_water_sources)
+        map_obj = produce_map2(lat, long, reduced_water_sources) 
+        print("returning values")
+        return JsonResponse({"map": map_obj.to_json()})
     else:
-        print("No specific water sources found nearby.")
+        return JsonResponse({"error": "No specific water sources found nearby."})
 

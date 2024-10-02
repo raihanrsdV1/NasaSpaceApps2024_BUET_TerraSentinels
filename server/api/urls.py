@@ -8,6 +8,7 @@ from .views.demo_view import hello
 from .views.community import *
 from .views.weather_data import *
 from .views.quiz import *
+from .views.water_resource_data import get_water_data
 
 urlpatterns = [
     # auth
@@ -17,6 +18,9 @@ urlpatterns = [
     
     # demo
     path("hello/", hello),
+    
+    # water data
+    path("water-data/<str:lat>/<str:long>/<int:max_distance>/", get_water_data),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
