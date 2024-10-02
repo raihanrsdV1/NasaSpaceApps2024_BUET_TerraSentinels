@@ -2,3 +2,4 @@ venv
 *venv*
 .git
 *pycache*
+db.sqlite3
