@@ -8,6 +8,7 @@ import CommunityHome from './components/Community/CommunityHome';
 import CommunityRegister from './components/Community/CommunityRegister';
 import CommunityLogin from './components/Community/CommunityLogin';
 
+
 const App: React.FC = () => {
   return (
     <Fragment>
@@ -19,6 +20,7 @@ const App: React.FC = () => {
           <Route path="/community" element={<CommunityHome />} />
           <Route path="/register" element={<CommunityRegister />} />
           <Route path="/login" element={<CommunityLogin />} />
+          <Route path="/water_resources" element={<HelloFromServer />} />
         </Routes>
       </Router>
     </Fragment>
