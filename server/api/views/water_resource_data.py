@@ -182,10 +182,11 @@ def cluster_and_reduce_points(water_sources, threshold_distance=0.1):
     return clustered_sources
 
 @api_view(['GET'])
-def get_water_data(request, lat, long, max_distance=1):  #max_distance in kilometers
-    print("long: ", long)
-    lat= float(lat)
-    long= float(long)
+def get_water_data(request):  #max_distance in kilometers
+    print(request.query_params)
+    lat = float(request.query_params.get('lat', 0))
+    long = float(request.query_params.get('long', 0))
+    max_distance = float(request.query_params.get('max_distance', 1))
     water_sources1 = get_specific_water_sources1(lat, long, max_distance*1000)
     water_sources2 = get_specific_water_sources2(lat, long, max_distance*1000)
     combined_water_sources = set(water_sources1 + water_sources2)
@@ -200,8 +201,11 @@ def get_water_data(request, lat, long, max_distance=1):  #max_distance in kilome
             #print(f"{idx+1}. Latitude: {lat}, Longitude: {lon}")
         #return produce_map(lat, long, reduced_water_sources)
         map_obj = produce_map2(lat, long, reduced_water_sources) 
+        map_html = map_obj.render() 
+        #save the map as an html file
+        #map_obj.save("water_sources_map.html")
         print("returning values")
-        return JsonResponse({"map": map_obj.to_json()})
+        return JsonResponse({"map": map_html})
     else:
         return JsonResponse({"error": "No specific water sources found nearby."})
 

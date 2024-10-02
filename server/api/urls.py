@@ -20,7 +20,7 @@ urlpatterns = [
     path("hello/", hello),
     
     # water data
-    path("water-data/<str:lat>/<str:long>/<int:max_distance>/", get_water_data),
+    path("water-data/", get_water_data),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),

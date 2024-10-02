@@ -1,24 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from "../../utils/AxiosSetup";
 import Navbar from '../Navbar'; 
 import Sidebar from '../Sidebar'; 
+
 const WaterData = () => {
-    const [latitude, setLatitude] = useState<number>(37.7749);
-    const [longitude, setLongitude] = useState<number>(-122.4194);
+    const [latitude, setLatitude] = useState<number>(25.621889);
+    const [longitude, setLongitude] = useState<number>(88.638489);
     const [maxDistance, setMaxDistance] = useState<number>(1);
     const [mapHtml, setMapHtml] = useState<string | null>(null);
     
     const getWaterData = async () => {
         try {
-            console.log("Fetching water data2...");
-            console.log(latitude, longitude, maxDistance);
-            const response = await axios.get(`water-data/${latitude}/${longitude}/${maxDistance}`);
+            console.log("Fetching water data...");
+            const response = await axios.get("/water-data/", {
+                params: {
+                    lat: latitude,
+                    long: longitude,
+                    max_distance: maxDistance
+                },
+            });
+            console.log(response);
               
-            if (response.data.map_html) {
+            if (response.data.map) {
                 console.log("Data obtained");
-                setMapHtml(response.data.map_html);
-            }
-            else {
+                setMapHtml(response.data.map);  // Set the HTML string for the map
+            } else {
                 console.error("No map data found");
             }
         } catch (error) {
@@ -37,7 +43,6 @@ const WaterData = () => {
             <Sidebar />
             <div className="flex flex-col items-center justify-center h-full">
                 <h1 className="text-4xl font-bold">Water Data</h1>
-                {/* Render HTML */}
                 {mapHtml ? (
                     <div dangerouslySetInnerHTML={{ __html: mapHtml }} />
                 ) : (
