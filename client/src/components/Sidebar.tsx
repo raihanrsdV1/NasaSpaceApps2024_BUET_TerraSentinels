@@ -8,7 +8,7 @@ const Sidebar = () => {
     }, []);
     
     return (
-        <div className="w-1/6 h-screen bg-gray-800 mt-20"> {/* Add margin-top to account for navbar height */}
+        <div className="w-1/6 bg-gray-800 mt-20"> {/* Add margin-top to account for navbar height */}
             <div className="fixed flex-col items-start p-4"> {/* Added padding for spacing */}
                 <ul className="flex flex-col">
                     <li 

@@ -116,7 +116,6 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
                   {
                     data: weatherData,
                     label: selectedParameter,
-                    area: true,
                     color: parameterStyles[selectedParameter].color,
                   },
                 ]}
@@ -126,8 +125,8 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
             </div>
 
             {/* Parameters on the Right Side */}
-            <div className="w-1/4 p-4 bg-gray-100 rounded ml-4">
-              <h2 className="text-lg font-semibold mb-2">Parameter Information</h2>
+            <div className="w-1/5 p-4 h-3/4 bg-gray-100 rounded ml-4 mt-14 flex flex-col justify-center items-center text-center">
+              <h2 className="text-lg font-semibold mb-2">Data Highlights</h2>
               <table className="table-auto">
                 <tbody>
                   <tr>
