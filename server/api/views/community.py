@@ -5,6 +5,7 @@ from ..models import *
 from ..serializers import *
 from .community_helper import *
 from django.utils import timezone
+from django.shortcuts import get_object_or_404
 
 @api_view(['POST'])
 def post_community(request):
@@ -185,26 +186,12 @@ def delete_comment_rating(request, id):
 
 @api_view(['GET'])
 def get_all_posts(request):
+    # Retrieve all posts
     posts = Post.objects.all()
-    
-    # Serialize the posts
-    post_data = []
-    
-    for post in posts:
-        # Count upvotes and downvotes for each post
-        upvotes_count = post.ratings.filter(upvote=True).count()
-        downvotes_count = post.ratings.filter(upvote=False).count()
+    # Serialize the posts using the updated PostSerializer
+    serializer = PostSerializer(posts, many=True)
 
-        # Get post data using serializer
-        post_serializer = PostSerializer(post).data
-        
-        # Add the ratings info to the serialized post data
-        post_serializer['upvotes'] = upvotes_count
-        post_serializer['downvotes'] = downvotes_count
-        
-        post_data.append(post_serializer)
-
-    return Response(post_data, status=status.HTTP_200_OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 
@@ -585,3 +572,25 @@ def post_date_range(request):
 
     except Post.DoesNotExist:
         return Response({'error': 'No posts found'}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+
+
+@api_view(['POST'])
+def add_image_to_post(request, post_id):
+    # Fetch the post by ID
+    post = get_object_or_404(Post, id=post_id)
+
+    # Check if there is any image in the request files
+    image = request.FILES.get('image')
+
+    if not image:
+        return Response({"error": "No image provided."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create the PostImage instance and associate it with the post
+    PostImage.objects.create(post=post, image=image)
+
+    # Return the updated post data with the new image
+    serializer = PostSerializer(post)
+    return Response({"message": "Image added successfully.", "post": serializer.data}, status=status.HTTP_200_OK)
