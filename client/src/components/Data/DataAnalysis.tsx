@@ -11,6 +11,10 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import dayjs from 'dayjs';
 
+import nasa_logo from "./nasa_logo.png";
+
+
+
 
 
 
@@ -21,10 +25,25 @@ type APITypes = "nasapower" | "gee";
 
 const nasapower = ["Surface Temperature", "Precipitation", "Humidity"];
 // will degine the gee api types later
+const gee = ["Evapotranspiration","Soil Moisture", "Vegetation Indices"];
+
+
+const dataSources = {
+  "Surface Temperature": "We obtained this data through the NASA POWER API, leveraging sources such as the GEWEX SRB R4-IP (January 1, 1984 - December 31, 2000), CERES SYN1deg Edition 4.1 (from January 1, 2001, with a latency of approximately 3-4 months), and CERES FLASHFlux Version 4A (providing near real-time data.).Link to the site : https://power.larc.nasa.gov/docs/services/api/",
+  "Precipitation": "We obtained this data through the NASA POWER API, leveraging sources such as the GEWEX SRB R4-IP (January 1, 1984 - December 31, 2000), CERES SYN1deg Edition 4.1 (from January 1, 2001, with a latency of approximately 3-4 months), and CERES FLASHFlux Version 4A (providing near real-time data). Link to the site : https://power.larc.nasa.gov/docs/services/api/",
+  "Humidity": "We obtained this data through the NASA POWER API, leveraging sources such as the GEWEX SRB R4-IP (January 1, 1984 - December 31, 2000), CERES SYN1deg Edition 4.1 (from January 1, 2001, with a latency of approximately 3-4 months), and CERES FLASHFlux Version 4A (providing near real-time data). Link to the site : https://power.larc.nasa.gov/docs/services/api/",
+  "Evapotranspiration": "We obtained this data through the Google Earth Engine API, leveraging sources such as the Global Land Evaporation Amsterdam Model (GLEAM) dataset. Data source provider : NASA LP DAAC at the USGS EROS Center. Link to the site : https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD16A2",
+  "Soil Moisture": "We obtained this data through the Google Earth Engine API, leveraging sources such as the Global Land Evaporation Amsterdam Model (GLEAM) dataset. Data source provider : NASA GSFC. Link to the site : https://developers.google.com/earth-engine/datasets/catalog/NASA_USDA_HSL_SMAP10KM_soil_moisture",
+  "Vegetation Indices": "We obtained this data through the Google Earth Engine API, leveraging sources such as the Global Land Evaporation Amsterdam Model (GLEAM) dataset. Data source provider : NASA LP DAAC at the USGS EROS Center. Link to the site : https://developers.google.com/earth-engine/datasets/catalog/MODIS_061_MOD13A1"
+
+};
+
+
+
 
 
 // Define the parameter types as a union of string literals
-type ParameterType = "Surface Temperature" | "Precipitation" | "Humidity";
+type ParameterType = "Surface Temperature" | "Precipitation" | "Humidity" | "Evapotranspiration" | "Soil Moisture" | "Vegetation Indices";
 
 
 
@@ -34,6 +53,9 @@ const parameterOptions: Record<ParameterType, string> = {
   "Surface Temperature": "TS",
   "Precipitation": "PRECTOTCORR",
   "Humidity": "QV2M",
+  "Evapotranspiration": "ET",
+  "Soil Moisture": "SM",
+  "Vegetation Indices": "NDVI",
 };
 
 const parameterStyles: Record<ParameterType, { color: string; unit: string }> = {
@@ -48,6 +70,18 @@ const parameterStyles: Record<ParameterType, { color: string; unit: string }> = 
   "Humidity": {
     color: "#1eee", // lime green
     unit: "%",
+  },
+  "Evapotranspiration": {
+    color: "#ff69b4", // hot pink
+    unit: "mm",
+  },
+  "Soil Moisture": {
+    color: "#ffd700", // gold
+    unit: "m³/m³",
+  },
+  "Vegetation Indices": {
+    color: "#32cd32", // lime green
+    unit: "NDVI",
   },
 };
 
@@ -84,20 +118,73 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
     }
   };
 
+  const getGEEData = async () => {
+    try {
+      // Prepare date strings in the desired format
+      const start = startDate ? startDate.toISOString().slice(0, 10) : null; // "YYYY-MM-DD"
+      const end = endDate ? endDate.toISOString().slice(0, 10) : null; // "YYYY-MM-DD"
+
+      
+      // Fetch data from the API
+      const response = await axios.get("/gee-data/", {
+        params: {
+          parameter,
+          start,
+          end,
+          lat: latitude,
+          long: longitude,
+        },
+      });
+
+      // Log the response data
+      // console.log("Response:", response.data); // Log the response data
+
+      // Extract the data and set the state
+      const data = response.data;
+
+      console.log(data);
+
+      setDateData(data.map((item: any) => item.date));
+      setWeatherData(data.map((item: any) => item.value));
+    } catch (error) {
+      console.error(`Error fetching GEE ${parameter} data:`, error);
+    }
+  };
+  
+
+
   const handleDownload = async () => {
+    // Select the content to download
     const content = document.querySelector('.content-to-download') as HTMLElement;
 
     if (content) {
+      // Create a canvas from the content
       const canvas = await html2canvas(content);
       const imgData = canvas.toDataURL('image/png');
 
       // Create a new jsPDF instance
       const pdf = new jsPDF();
 
-      // Add the chart image to the PDF
-      pdf.addImage(imgData, 'PNG', 10, 10, 190, 100); // Adjust dimensions as needed
+      // Add the NASA logo to the PDF
+      const logoX = 10;
+      const logoY = 5;
+      const logoWidth = 20;
+      const logoHeight = 20;
+      pdf.addImage(nasa_logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
-      // Add dataset in tabular format
+      // Add the title text below the logo
+   
+      pdf.text(`${selectedParameter} Data Analysis`, 40, logoY + 10); 
+      pdf.text('powered by NASA Earth Data', 40, logoY + 20); 
+
+      // Add the chart image to the PDF
+      const chartX = 10;
+      const chartY = logoY + logoHeight + 30; // Set Y position below the logo and text
+      const chartWidth = 190;
+      const chartHeight = 100;
+      pdf.addImage(imgData, 'PNG', chartX, chartY, chartWidth, chartHeight);
+
+      // Prepare dataset in tabular format
       const tableData = weatherData.map((value, index) => ({
         date: dateData[index].replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'), // Format date as yyyy-mm-dd
         value,
@@ -106,11 +193,14 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
       const headers = ['Date', 'Value'];
       const rows = tableData.map(row => [row.date, row.value]);
 
+      // Set the starting Y position for the table below the chart with additional spacing
+      const tableStartY = chartY + chartHeight + 20;
+
       // Add table headers and data using autoTable
       pdf.autoTable({
         head: [headers],
         body: rows,
-        startY: 120, // Starting position for the table
+        startY: tableStartY,
       });
 
       // Calculate statistics
@@ -120,29 +210,38 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
       const mostRecurringRange = calculateMostRecurringRange(weatherData);
       const extremeValueInfo = getExtremeValueInfo(weatherData, dateData);
 
-      // Add key points to the PDF
+      // Add key statistics to the PDF
       pdf.setFontSize(12);
-      pdf.text(`Max Value: ${maxValue}`, 10, pdf.autoTable.previous.finalY + 10);
-      pdf.text(`Min Value: ${minValue}`, 10, pdf.autoTable.previous.finalY + 20);
-      pdf.text(`Median Value: ${medianValue}`, 10, pdf.autoTable.previous.finalY + 30);
-      pdf.text(`Most Recurring Range: ${mostRecurringRange}`, 10, pdf.autoTable.previous.finalY + 40);
+      let statsYPosition = pdf.autoTable.previous.finalY + 10; // Start below the table
+      pdf.text(`Max Value: ${maxValue}`, 10, statsYPosition);
+      pdf.text(`Min Value: ${minValue}`, 10, statsYPosition + 10);
+      pdf.text(`Median Value: ${medianValue}`, 10, statsYPosition + 20);
+      pdf.text(`Most Recurring Range: ${mostRecurringRange}`, 10, statsYPosition + 30);
 
       // Add extreme value information
-      // Tabbulate the data
-      pdf.text('Extreme Value Information', 10, pdf.autoTable.previous.finalY + 50);
+      pdf.text('Extreme Value Information', 10, statsYPosition + 50);
       const extremeValueHeaders = ['Date', 'Value'];
       const extremeValueRows = [[extremeValueInfo.date, extremeValueInfo.value]];
       pdf.autoTable({
         head: [extremeValueHeaders],
         body: extremeValueRows,
-        startY: pdf.autoTable.previous.finalY + 60,
+        startY: statsYPosition + 60, // Start below the extreme value header
       });
 
-      // Save the PDF name it accordingly to the data being downloaded and time range selected
-      pdf.save(`weather-data-${parameter}-${startDate?.toISOString().slice(0, 10)}-${endDate?.toISOString().slice(0, 10)}.pdf`);
-      
+      // Add the data source information
+      const dataSourceYPosition = pdf.autoTable.previous.finalY + 10;
+      pdf.text('Data Sources', 10, dataSourceYPosition);
+      pdf.text(dataSources[selectedParameter], 10, dataSourceYPosition + 10, { maxWidth: 190 });
+
+      // save time stamp and user name
+      pdf.text(`Downloaded by: ${localStorage.getItem('username')}`, 5, dataSourceYPosition + 30);
+      pdf.text(`Downloaded on: ${new Date().toLocaleString()}`, 5, dataSourceYPosition + 40);
+
+      // Save the PDF with a dynamic name based on the selected parameter and date range
+      pdf.save(`nasa-data-${selectedParameter}-${startDate?.toISOString().slice(0, 10)}-${endDate?.toISOString().slice(0, 10)}.pdf`);
     }
   };
+
 
   const calculateMedian = (data: Array<number>) => {
     const sortedData = [...data].sort((a, b) => a - b);
@@ -171,7 +270,9 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
   useEffect(() => {
     if(nasapower.includes(selectedParameter)) {
       getWeatherData();
-      
+    }
+    else if(gee.includes(selectedParameter)) {
+      getGEEData();
     }
   }, [latitude, longitude, startDate, endDate, parameter]);
 
@@ -232,10 +333,15 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
       const ratio = (clampedValue - minValue) / (maxValue - minValue);
       
       // Define the threshold for the red color
-      const threshold = maxValue * 0.95; // 95% of the maximum value
+      var threshold = maxValue * 0.95; // 95% of the maximum value
+
+      // If too many values are above the threshold, adjust the threshold
     
       // If the value exceeds the threshold, return red
       if (clampedValue > threshold) {
+        if(selectedParameter === 'Vegetation Indices'){
+          return 'rgb(0, 255, 0)'; // Green color for values > 95%
+        }
         return 'rgb(255, 0, 0)'; // Red color for values > 95%
       }
     
@@ -321,16 +427,16 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
             </div>
 
             {/* Parameters on the Right Side */}
-            <div className="w-1/5 p-4 h-3/4 bg-gray-100 rounded ml-4 mt-14 flex flex-col justify-center items-center text-center">
+            <div className="w-1/5 p-4 h-3/4 bg-gray-100 rounded ml-4 mt-12 flex flex-col justify-center items-center text-center">
               <h2 className="text-lg font-semibold mb-2">Data Highlights</h2>
               <table className="table-auto">
                 <tbody>
                   <tr>
-                    <td className="border px-4 py-2 font-bold">Start Date</td>
+                    <td className="border px-4 py-2 font">Start Date</td>
                     <td className="border px-4 py-2">{startDate?.toLocaleDateString()}</td>
                   </tr>
                   <tr>
-                    <td className="border px-4 py-2 font-bold">End Date</td>
+                    <td className="border px-4 py-2 font">End Date</td>
                     <td className="border px-4 py-2">{endDate?.toLocaleDateString()}</td>
                   </tr>
                   <tr>
@@ -344,13 +450,25 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
                   <tr>
                     <td className="border px-4 py-2 font-bold">Max</td>
                     <td className="border px-4 py-2">
-                      {maxValue} {parameterStyles[selectedParameter].unit}
+                      {maxValue.toFixed(2)} {parameterStyles[selectedParameter].unit}
                     </td>
                   </tr>
                   <tr>
                     <td className="border px-4 py-2 font-bold">Min</td>
                     <td className="border px-4 py-2">
-                      {minValue} {parameterStyles[selectedParameter].unit}
+                      {minValue.toFixed(2)} {parameterStyles[selectedParameter].unit}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Median</td>
+                    <td className="border px-4 py-2">
+                      {calculateMedian(weatherData).toFixed(2)} {parameterStyles[selectedParameter].unit}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border px-4 py-2 font-bold">Average</td>
+                    <td className="border px-4 py-2">
+                      {(weatherData.reduce((a, b) => a + b, 0) / weatherData.length).toFixed(2)} {parameterStyles[selectedParameter].unit}
                     </td>
                   </tr>
                   <tr>

@@ -3,3 +3,4 @@ venv
 .git
 *pycache*
 db.sqlite3
+.env
