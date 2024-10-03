@@ -184,6 +184,7 @@ class Quiz(models.Model):
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='quizzes')  # Topic the quiz belongs to
     question = models.TextField()  # Quiz question
     correct_answer = models.ForeignKey('Option', on_delete=models.PROTECT, related_name='correct_for_quiz', blank=True, null=True)  # Correct answer option
+    explanation = models.TextField(blank=True)  # Explanation for the answer
 
     def __str__(self):
         return self.question

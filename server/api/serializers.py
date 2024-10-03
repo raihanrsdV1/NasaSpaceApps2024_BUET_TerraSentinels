@@ -14,7 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'password', 'phone_no', 'location_lat', 'location_lon']
+        fields = ['first_name', 'last_name', 'email', 'password', 'phone_no', 'location_lat', 'location_lon', 'username']
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
@@ -39,7 +39,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names', 'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']  # Include user_info
+        fields = ['id', 'user', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names', 'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']  # Include user_info
 
     def get_tag_names(self, obj):
         return [tag.name for tag in obj.tags.all()]  # Return tag names
@@ -142,7 +142,7 @@ class QuizSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Quiz
-        fields = ['id', 'topic', 'question', 'correct_answer', 'options']  # Include options in fields
+        fields = ['id', 'topic', 'question', 'correct_answer', 'options', 'explanation']  # Include options in fields
 
     def create(self, validated_data):
         options_data = validated_data.pop('options', [])  # Extract options from the data
@@ -171,10 +171,11 @@ class QuizSerializer(serializers.ModelSerializer):
 class QuizSolveSerializer(serializers.ModelSerializer):
     time_interval = serializers.SerializerMethodField()  # Add field for time interval
     num_attempts = serializers.SerializerMethodField()  # Add field for number of attempts
+    user_info = UserRegistrationSerializer(source='user', read_only=True)  # Include user information, but make sure it's read-only
 
     class Meta:
         model = QuizSolve
-        fields = ['id', 'user', 'quiz', 'chosen_option', 'quiz_taking_start', 'quiz_time_end', 'time_interval', 'num_attempts']  # Include new fields
+        fields = ['id','user', 'user_info', 'quiz', 'chosen_option', 'quiz_taking_start', 'quiz_time_end', 'time_interval', 'num_attempts']  # Include new fields
 
     def get_time_interval(self, obj):
         # Convert both times to timezone-aware if they are not already
@@ -201,3 +202,5 @@ class BlogSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Blog.objects.create(**validated_data)
+
+

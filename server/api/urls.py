@@ -8,6 +8,7 @@ from .views.demo_view import hello
 from .views.community import *
 from .views.weather_data import *
 from .views.quiz import *
+from .views.water_resource_data import get_water_data
 
 urlpatterns = [
     # auth
@@ -17,6 +18,9 @@ urlpatterns = [
     
     # demo
     path("hello/", hello),
+    
+    # water data
+    path("water-data/", get_water_data),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
@@ -96,4 +100,9 @@ urlpatterns = [
     path('quiz/<int:quiz_id>/leaderboard/', get_quiz_leaderboard, name='quiz-leaderboard'),
     path('quiz/leaderboard/global/', get_global_leaderboard, name='global_leaderboard'),
     path('post/<int:post_id>/add-image/', add_image_to_post, name='add-image-to-post'),
+    path('api/quizzes/', get_quizzes_by_topic, name='get_quizzes_by_topic'),
+    path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
+    path('notifications/add/', add_notification, name='add-notification'),
+    path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
+    # Add other URLs here...
 ]

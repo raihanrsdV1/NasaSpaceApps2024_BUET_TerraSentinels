@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.shortcuts import get_object_or_404
 from datetime import datetime
 from django.db.models import F, ExpressionWrapper, DurationField, Count, Sum, Min, Case, When, Q
-
+from django.db.models import Prefetch
 
 
 # Create a Topic
@@ -159,29 +159,33 @@ def add_correct_option(request, quiz_id):
 
 
 
-
 @api_view(['POST'])
 def start_quiz(request):
-    user_id = request.data.get('user_id')  # Assuming the user is authenticated
-    quiz_id = request.data.get('quiz_id')
-
-    # Get the quiz object
-    quiz = get_object_or_404(Quiz, id=quiz_id)
+    user_id = request.data.get('user_id')  # Get the user ID from the request
+    quiz_id = request.data.get('quiz_id')  # Get the quiz ID from the request
 
     # Create a new QuizSolve instance
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+
+    # Get the user object
+    user = get_object_or_404(User, id=user_id)
+
     quiz_solve_data = {
-        'user': user_id,
-        'quiz': quiz.id,
+        'user': user_id,  # Pass the user ID directly
+        'quiz': quiz_id,  # Pass the quiz ID directly
     }
-    
+
     # Serialize the data and save the instance
     serializer = QuizSolveSerializer(data=quiz_solve_data)
-    
+
     if serializer.is_valid():
         serializer.save()  # This will create the QuizSolve instance
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     else:
+        print(serializer.errors)  # Print the errors for debugging
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     
 
 """
@@ -200,6 +204,7 @@ def end_quiz(request):
     user = request.data.get('user_id')  # Assuming the user is authenticated
     quiz_solve_id = request.data.get('quiz_solve_id')
     chosen_option_id = request.data.get('chosen_option')
+    print(request.data)
     print(user, quiz_solve_id, chosen_option_id)
 
     # Fetch the QuizSolve instance
@@ -301,11 +306,50 @@ def get_global_leaderboard(request):
         earliest_end_time=Min('quiz_time_end')
     ).filter(correct_solved__gt=0)  # Only keep users with correct solves
 
-    # Step 3: Order the results by correct solves, cumulative time, and earliest end time
-    leaderboard = leaderboard.order_by(
+    # Fetch user info for each user in the leaderboard
+    leaderboard_with_user_info = leaderboard.annotate(
+        username=F('user__username'),
+        first_name=F('user__first_name'),
+        last_name=F('user__last_name'),
+        email=F('user__email')
+    ).order_by(
         '-correct_solved',     # Sort by most correct quizzes solved
         'cumulative_time',     # Sort by shortest cumulative time
         'earliest_end_time'    # Sort by earliest finish time
     )
 
-    return Response(leaderboard, status=200)
+    return Response(list(leaderboard_with_user_info), status=200)
+
+
+
+
+@api_view(['GET'])
+def get_quizzes_by_topic(request):
+    topic_id = request.GET.get('topic')  # Get the topic ID from the query parameters
+
+    if not topic_id:
+        return Response({"error": "Topic ID is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        # Retrieve quizzes for the specified topic
+        quizzes = Quiz.objects.filter(topic_id=topic_id)
+        serializer = QuizSerializer(quizzes, many=True)  # Serialize the quizzes
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+
+
+
+@api_view(['GET'])
+def get_blogs_by_topic(request, topic_id):
+    """
+    Fetch all blogs related to a specific topic.
+    """
+    blogs = Blog.objects.filter(topic_id=topic_id)  # Fetch blogs by topic ID
+
+    if not blogs.exists():
+        return Response({"message": "No blogs found for this topic."}, status=status.HTTP_404_NOT_FOUND)
+
+    serializer = BlogSerializer(blogs, many=True)  # Serialize the blog objects
+    return Response(serializer.data, status=status.HTTP_200_OK)

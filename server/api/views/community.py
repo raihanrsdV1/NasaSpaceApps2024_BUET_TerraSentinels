@@ -594,3 +594,60 @@ def add_image_to_post(request, post_id):
     # Return the updated post data with the new image
     serializer = PostSerializer(post)
     return Response({"message": "Image added successfully.", "post": serializer.data}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+@api_view(['GET'])
+def get_user_notifications(request, user_id):
+    try:
+        # Filter notifications by user and sort them by 'created_at' from latest to oldest
+        notifications = Notification.objects.filter(user_id=user_id).order_by('-created_at')
+        
+        # Serialize the notifications
+        serializer = NotificationSerializer(notifications, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except Notification.DoesNotExist:
+        return Response({"error": "Notifications not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+
+@api_view(['POST'])
+def add_notification(request):
+    # Extract data from the request
+    user_id = request.data.get('user')
+    content = request.data.get('content')
+    post_id = request.data.get('post', None)
+    is_seen = request.data.get('is_seen', False)
+    is_alert = request.data.get('is_alert', False)
+
+    try:
+        # Fetch the user and post (if provided)
+        user = User.objects.get(id=user_id)
+        post = Post.objects.get(id=post_id) if post_id else None
+
+        # Create the notification
+        notification = Notification.objects.create(
+            user=user,
+            content=content,
+            post=post,
+            is_seen=is_seen,
+            is_alert=is_alert
+        )
+
+        # Serialize the newly created notification
+        serializer = NotificationSerializer(notification)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    except Post.DoesNotExist:
+        return Response({"error": "Post not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    except Exception as e:
+        return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
