@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .views.drought_data import predict
 from .views.auth_view import MyTokenObtainPairView, register
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -114,5 +116,7 @@ urlpatterns = [
     
     path('gee-data/', getGEEData, name='get_gee_data'),
     
+    # Prediction URLs
+    path('predict/',predict, name='predict'),
     # Add other URLs here...
 ]

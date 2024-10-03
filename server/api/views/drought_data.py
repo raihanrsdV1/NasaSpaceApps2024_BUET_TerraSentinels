@@ -4,7 +4,7 @@ from rest_framework import status
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from scipy.stats import gamma,norm
 from pathlib import Path
 
@@ -17,7 +17,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_squared_error
 import joblib
 from sklearn.model_selection import ParameterSampler
-import itertools
+# import itertools
 
 NASA_POWER = "https://power.larc.nasa.gov/api/temporal/monthly/point?"
 
@@ -290,5 +290,19 @@ def predict(request):
     # Add the forecasted values (predicted mean) to the DataFrame
     forecast_df['forecast'] = forecast.predicted_mean
 
-    # Convert the forecast to a dictionary
-    return Response(forecast_df.to_dict(orient='records'))
+    # Add date column for each step in the forecast
+    # future_dates = pd.date_range(start=pd.Timestamp(end_year, 12, 31), periods=steps, freq='M')
+    # forecast_df['date'] = future_dates
+
+    print("Columns in forecast_df: ", forecast_df.columns)
+    print("Head of forecast_df: ", forecast_df.head())
+    print("Forecast Index",forecast_df.index)
+
+    # Reset the index to make 'date' a column
+    forecast_df = forecast_df.reset_index()
+
+    # Convert to dictionary format, using correct column names
+    forecast_response = forecast_df[['index', 'forecast', 'lower spi', 'upper spi']].rename(columns={'index': 'date'}).to_dict(orient='records')
+
+    # Return forecast as JSON response
+    return Response(forecast_response)
