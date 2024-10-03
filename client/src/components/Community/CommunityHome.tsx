@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "../../utils/AxiosSetup";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -9,9 +9,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowUp, faArrowDown, faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import RightSidebar from "./RightSideBar";
 import CreateEditModal from "./CreateEditModal";
+import AuthContext from "../../context/AuthContext";
 
 const CommunityHome = () => {
-  const userId = 1; // Replace this with the actual user ID from your auth context or state
+  const contextData = useContext(AuthContext);
+  const userId = contextData?.user;
   const [posts, setPosts] = useState<Post[]>([]);
   const [userVotes, setUserVotes] = useState<{ [key: number]: "upvoted" | "downvoted" | null }>({});
   const [showOptions, setShowOptions] = useState<{ [key: number]: boolean }>({});

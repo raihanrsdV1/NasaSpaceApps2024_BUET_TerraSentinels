@@ -1,6 +1,7 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import axios from "../../utils/AxiosSetup";
 import { Comment } from "../../types/types";
+import AuthContext from "../../context/AuthContext";
 
 interface CommentSectionProps {
   postId: number;
@@ -13,7 +14,8 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
   const [replyContent, setReplyContent] = useState(""); // Add this line
   const [editTo, setEditTo] = useState<number | null>(null); // Add this line
   const [editContent, setEditContent] = useState(""); // Add this line
-  const userId = 1;
+  const contextData = useContext(AuthContext);
+  const userId = contextData?.user;
 
   const replyRef = useRef<HTMLDivElement | null>(null);
   const editRef = useRef<HTMLDivElement | null>(null);
