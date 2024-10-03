@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node"], // Add this line
     "typeRoots": ["./node_modules/@types", "./src/types"],
     // other options...
   },

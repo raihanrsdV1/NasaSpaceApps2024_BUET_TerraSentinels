@@ -18,9 +18,11 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
 
         # Add custom claims
-        token["email"] = user.email
+        token["phone_no"] = user.phone_no
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
+        token["location_lat"] = user.location_lat
+        token["location_lon"] = user.location_lon
 
         return token
 
@@ -28,39 +30,21 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+
 @user_register_swagger_schema()
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
     serializer = UserRegistrationSerializer(data=request.data)
-    
+
     if serializer.is_valid():
-        first_name = serializer.validated_data['first_name']
-        last_name = serializer.validated_data['last_name']
-        
-        # Generate unique username
-        base_username = f"{first_name.lower()}.{last_name.lower()}"
-        username = base_username
-        num = 1
-        while User.objects.filter(username=username).exists():
-            username = f"{base_username}{num}"
-            num += 1
+        user = serializer.save()
 
-        # Save the user with latitude, longitude, and phone number
-        user = serializer.save(username=username)
+        serialized_user = UserRegistrationSerializer(user)
 
-        # Serialize the created user to include in the response
-        user_data = UserRegistrationSerializer(user).data
-        
         return Response({
             "message": "User created successfully",
-            "user": user_data,
-            "username": username  # Add the determined username to the response
+            "user": serialized_user.data,
         }, status=status.HTTP_201_CREATED)
-    
+
     return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
