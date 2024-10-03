@@ -13,8 +13,6 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 export default AuthContext;
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
-	const { pathname } = useLocation();
-
 	const [authTokens, setAuthTokens] = useState<AuthTokens | null>(
 		localStorage.getItem("authTokens") ? JSON.parse(localStorage.getItem("authTokens") as string) : null
 	);
@@ -35,20 +33,20 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
 
 		const formElem: HTMLFormElement = e.target as HTMLFormElement;
 
-		if (!formElem || !formElem.email) {
-			console.error("Invalid form event. Unable to retrieve email.");
-			toast.error("Invalid form event. Unable to retrieve email.", {
+		if (!formElem || !formElem.phone_no) {
+			console.error("Invalid form event. Unable to retrieve phone_no.");
+			toast.error("Invalid form event. Unable to retrieve phone_no.", {
 				autoClose: false,
 			});
 			return;
 		}
 
 		const formData = {
-			email: formElem.email.value,
+			phone_no: formElem.phone_no.value,
 			password: formElem.password.value,
 		};
 
-		if (!formData.email || !formData.password) {
+		if (!formData.phone_no || !formData.password) {
 			toast.error("Please fill in all fields.", {
 				autoClose: false,
 			});
