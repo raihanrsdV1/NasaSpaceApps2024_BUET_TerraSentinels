@@ -32,7 +32,7 @@ def get_weather_data(request, parameter, start, end, long, lat):
     end = datetime.strptime(end, '%Y%m%d')
     
     # to show the graph in a nice way, we can't have too many data points - so max - 6 months.
-    if (end - start).days > 180:
+    if (end - start).days > 1800*5:
         return Response("Please select a date range of 6 months or less", status=status.HTTP_400_BAD_REQUEST)
     
     request_url = build_request(start, end, long, lat, parameter=[parameter])

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "../../utils/AxiosSetup"; // Adjust path if necessary
 import MapSelector from "../MapSelector"; // Adjust path if necessary
+import brand from "../../brand.png"; // Adjust path if necessary
 
 const apiKey = "AIzaSyAvwlUzN8yS6W6oWei0anmvA_bTuao_ay0";
 const mapId = "a76d6833c6f687c8";
@@ -30,7 +31,6 @@ const Register: React.FC = () => {
         setIsSubmitting(true); // Disable the button
 
         try {
-            console.log("Submitting the form with values:", formData); // Log values on submit
             const res = await axios.post("register/", {
                 first_name: formData.firstName,
                 last_name: formData.lastName,
@@ -44,9 +44,8 @@ const Register: React.FC = () => {
             console.log("Response received:", res.data);
             const username = res.data.username;
             toast.success(`Registration successful! Your username is: ${username}`);
-            navigate(`/email-not-verified/${res.data.user.email}`, { replace: true });
+            navigate(`/login`, { replace: true });
         } catch (error) {
-            console.error("Error during registration:", error);
             toast.error("Registration failed"); // Generic error message
         } finally {
             setIsSubmitting(false); // Re-enable the button
@@ -54,68 +53,89 @@ const Register: React.FC = () => {
     };
 
     return (
-        <div className="h-screen bg-cover bg-center" style={{
-            backgroundImage: 'url("https://example.com/background-image.jpg")',
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "center",
-            marginTop: "50px",
-        }}>
-            <div className="max-w-[30rem] w-full rounded-lg shadow-md pt-4" style={{
-                backgroundColor: "rgba(128, 128, 128, 0.8)",
-                padding: "2rem",
-                backdropFilter: "blur(5px)",
-            }}>
-                <p className="small-headings text-center text-white">
-                    Join a world full of talented individuals. Teach them. Learn from them.
-                </p>
+        <div className="h-screen bg-gradient-to-r flex flex-col items-center justify-start">
+            {/* Header Section with Brand Name and Logo */}
+            <div className="w-full flex flex-col items-center mt-6 mb-8">
+                <img src={brand} alt="Brand Logo" className="h-16 mb-4" /> {/* Adjust path and size */}
+                <h2 className="text-3xl font-bold text-black">
+                    Join us in our mission to save the farming community!
+                </h2>
+            </div>
 
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        name="firstName"
-                        placeholder="First Name"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        className="w-full mb-4 p-2"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="lastName"
-                        placeholder="Last Name"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        className="w-full mb-4 p-2"
-                        required
-                    />
-                    <input
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className="w-full mb-4 p-2"
-                        required
-                    />
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        className="w-full mb-4 p-2"
-                        required
-                    />
-                    <input
-                        type="text"
-                        name="phone_no"
-                        placeholder="Phone Number"
-                        value={formData.phone_no}
-                        onChange={handleChange}
-                        className="w-full mb-4 p-2"
-                        required
-                    />
+            <div className="max-w-6xl w-full bg-white rounded-lg shadow-2xl p-6 flex flex-row gap-10">
+                
+                {/* Left Section: Form */}
+                <div className="w-1/2">
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            name="firstName"
+                            placeholder="First Name"
+                            value={formData.firstName}
+                            onChange={handleChange}
+                            className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="lastName"
+                            placeholder="Last Name"
+                            value={formData.lastName}
+                            onChange={handleChange}
+                            className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            required
+                        />
+                        <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            required
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            required
+                        />
+                        <input
+                            type="text"
+                            name="phone_no"
+                            placeholder="Phone Number"
+                            value={formData.phone_no}
+                            onChange={handleChange}
+                            className="w-full mb-4 p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 transition duration-300"
+                            required
+                        />
+
+                        <div className="flex flex-col items-center justify-center mt-6">
+                            <button
+                                className="bg-green-500 text-white px-6 py-3 rounded-lg shadow-md hover:bg-green-600 transition duration-300"
+                                type="submit"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? "Registering..." : "Register"}
+                            </button>
+                            <div className="mb-4">
+                                Already have an account?{" "}
+                                <Link to="/login" className="font-medium text-green-600 hover:underline">
+                                    Login
+                                </Link>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                {/* Right Section: Map and Search for a Place */}
+                <div className="w-1/2">
+                    <h2 className="text-xl font-bold text-gray-800 mb-4">
+                        Select your location on the map
+                    </h2>
 
                     <MapSelector
                         onSelect={(lat, lng) => {
@@ -126,26 +146,14 @@ const Register: React.FC = () => {
                         mapId={mapId}
                     />
 
-                    <div>
+                    <div className="mt-4">
                         {selectedLat && selectedLng && (
-                            <p className="text-center text-white">
+                            <p className="text-center text-gray-700">
                                 Selected Coordinates: Lat: {selectedLat}, Lng: {selectedLng}
                             </p>
                         )}
                     </div>
-
-                    <div className="flex flex-col items-center justify-center">
-                        <div>
-                            Already have an account?{" "}
-                            <Link to="/login" className="font-medium text-green-500 hover:underline">
-                                Login
-                            </Link>
-                        </div>
-                        <button className="solid-btn" type="submit" disabled={isSubmitting}>
-                            Register
-                        </button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     );

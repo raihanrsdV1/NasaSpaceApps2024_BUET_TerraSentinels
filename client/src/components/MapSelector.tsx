@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 interface MapSelectorProps {
-    onSelect: (lat: number, lng: number) => void;
+    onSelect: (lat: number, lng: number, name: string) => void; // Update to include name
     apiKey: string;
     mapId?: string; // Optional mapId prop
 }
@@ -38,7 +38,7 @@ const MapSelector: React.FC<MapSelectorProps> = ({ onSelect, apiKey, mapId }) =>
                     if (event.latLng) {
                         const lat = event.latLng.lat();
                         const lng = event.latLng.lng();
-                        onSelect(lat, lng); // Callback to parent component
+                        onSelect(lat, lng, ''); // Pass an empty name when clicked
                     }
                 });
 
@@ -53,8 +53,8 @@ const MapSelector: React.FC<MapSelectorProps> = ({ onSelect, apiKey, mapId }) =>
                     if (place.geometry && place.geometry.location) {
                         const lat = place.geometry.location.lat();
                         const lng = place.geometry.location.lng();
-                        onSelect(lat, lng); // Callback to parent component
-                        // Optionally center the map on the selected place
+                        const name = place.name || ''; // Fallback to an empty string if undefined
+                        onSelect(lat, lng, name); // Pass the name to parent component
                         mapInstance.current?.setCenter(place.geometry.location);
                     }
                 });
