@@ -21,6 +21,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["phone_no"] = user.phone_no
         token["first_name"] = user.first_name
         token["last_name"] = user.last_name
+        token["location_lat"] = user.location_lat
+        token["location_lon"] = user.location_lon
 
         return token
 

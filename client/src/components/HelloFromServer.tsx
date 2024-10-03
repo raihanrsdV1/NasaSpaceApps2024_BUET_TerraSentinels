@@ -1,8 +1,15 @@
-import { useEffect, useState } from "react";
-import axios from "../utils/AxiosSetup";
+import { useEffect, useState, useContext } from "react";
+import useAxios from "../hooks/useAxios";
+import AuthContext from "../context/AuthContext";
 
 const HelloFromServer = () => {
+  const axios = useAxios();
   const [message, setMessage] = useState<String>("");
+
+  const contextData = useContext(AuthContext);
+  const user = contextData?.user;
+  console.log(user);
+
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get("hello");
