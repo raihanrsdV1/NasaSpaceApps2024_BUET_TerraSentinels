@@ -9,6 +9,8 @@ import CommunityRegister from './components/Community/CommunityRegister';
 import CommunityLogin from './components/Community/CommunityLogin';
 import QuizPage from './components/Quiz/QuizPage';
 import WaterData from './components/water_resources/WaterData';
+import Weather from './components/Dashboard/Weather';
+import Dashboard from './components/Dashboard/DBoard';
 
 const App: React.FC = () => {
   return (
@@ -23,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/login" element={<CommunityLogin />} />
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/water_resources" element={<WaterData />} />
+          <Route path="/dashboard" element ={<Dashboard />} />  
         </Routes>
       </Router>
     </Fragment>
