@@ -1,0 +1,147 @@
+.task-manager-block {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.task-manager-header {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.task-input-block {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.task-input-block input {
+    width: 70%;
+    padding: 8px;
+    font-size: 16px;
+}
+
+.task-input-block button {
+    padding: 8px 12px;
+    font-size: 16px;
+}
+
+.tasks-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.task-circle {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #000;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.task-circle.completed {
+    background-color: #28a745;
+    color: white;
+}
+
+.task-completed {
+    text-decoration: line-through;
+    color: #aaa;
+}
+
+.task-empty {
+    font-size: 16px;
+    color: #aaa;
+    margin-left: 34px;
+    /* To align it with the task-circle */
+}
+
+.see-more-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+}
+
+.modal-header button {
+    background-color: transparent;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.modal-tasks-list {
+    margin-top: 20px;
+}
+
+.task-item button.delete-button {
+    margin-left: auto;
+    width: 24px;
+    height: 24px;
+    border-radius: 100%;
+    /* background-color: red; */
+    color: white;
+    /* border: none; */
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid black;
+}
+
+.task-item button.delete-button:hover {
+    background-color: #28a745;
+}
+
+.add-button:hover {
+    color: #28a745;
+    border: none;
+    cursor: pointer;
+}
