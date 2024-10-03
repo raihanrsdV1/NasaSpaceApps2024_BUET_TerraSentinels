@@ -6,23 +6,20 @@ import './stylesheet.css'
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
 import TaskManager from './TaskManager';
-
 const DBoard = () => {
     return (
         <div className='flex'>
             <Sidebar />
             <Navbar />
-            <div className="dashboard">
+            <div className="dashboard mt-20">
                 <div className="main-content">
-                    <div className="top-row">
+                    <div className="top-row full-width"> {/* Added full-width class */}
                         <Weather />
-                        <TaskManager />
-                        <Alerts />
                     </div>
+                    <TaskManager />
+                    <Alerts />
                     <div className="middle-row"></div>
-                    <div className="bottom-row">
-                        
-                    </div>
+                    <div className="bottom-row"></div>
                 </div>
             </div>
         </div>
@@ -30,3 +27,4 @@ const DBoard = () => {
 };
 
 export default DBoard;
+

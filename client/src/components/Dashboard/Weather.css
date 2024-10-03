@@ -1,0 +1,117 @@
+.weather-block {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .weather-info {
+    font-size: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+  }
+  
+  .weather-header {
+    font-size: 14px;
+    color: #666;
+    font-weight: bold;
+    margin-bottom: 5px; /* Adjust space between the header and the remark */
+    text-align: center;
+  }
+  
+  .remark {
+    font-size: 20px;
+    /* color: #666; */
+    margin-bottom: 20px; /* Adds space below the remark */
+    text-align: center;
+    color: #000000;
+  }
+  
+  .weather-element {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .temperature {
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .feels-like,
+  .wind-speed,
+  .humidity {
+    font-size: 15px;
+  }
+  
+  .icon {
+    width: 40px;
+    margin-bottom: 5px;
+  }
+  
+
+  .see-more-container {
+    text-align: right;
+  }
+  
+  .see-more-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .modal-content {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .close-button {
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #FF0000;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+  
