@@ -13,8 +13,8 @@ from django.http import JsonResponse
 from google.oauth2 import service_account
 import ee
 
-ee.Authenticate()
-ee.Initialize(project='nasa-space-apps-24')
+# ee.Authenticate()
+# ee.Initialize(project='nasa-space-apps-24')
 
 
 def get_evapotranspiration_series(lat, lon, start, end):
