@@ -7,6 +7,8 @@ from rest_framework_simplejwt.views import (
 from .views.demo_view import hello
 from .views.community import *
 from .views.weather_data import *
+from .views.quiz import *
+from .views.water_resource_data import get_water_data
 
 urlpatterns = [
     # auth
@@ -16,6 +18,9 @@ urlpatterns = [
     
     # demo
     path("hello/", hello),
+    
+    # water data
+    path("water-data/", get_water_data),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
@@ -70,4 +75,34 @@ urlpatterns = [
 
     path('posts/filter/', filter_posts, name='post-filter'),
     path('posts/date-range/', post_date_range, name='post-date-range'),
+
+
+    # Topic URLs
+    path('topics/', create_topic, name='create_topic'),  # Create Topic
+    path('topics/<int:pk>/', edit_topic, name='edit_topic'),  # Edit Topic
+    path('topics/<int:pk>/delete/', delete_topic, name='delete_topic'),  # Delete Topic
+    
+    # Blog URLs
+    path('blogs/', create_blog, name='create_blog'),  # Create Blog
+    path('blogs/<int:pk>/', edit_blog, name='edit_blog'),  # Edit Blog
+    path('blogs/<int:pk>/delete/', delete_blog, name='delete_blog'),  # Delete Blog
+
+    path('topics/all/', get_all_topics, name='get_all_topics'),  # Endpoint to get all topics
+    path('blogs/all/', get_all_blogs, name='get_all_blogs'),    # Endpoint to get all blogs
+
+    path('quizzes/', quiz_list, name='quiz-list'),
+    path('quizzes/<int:pk>/', quiz_detail, name='quiz-detail'),
+    path('quizzes/<int:quiz_id>/add-correct-option/', add_correct_option, name='add-correct-option'),
+
+    path('quiz/start/', start_quiz, name='start-quiz'),  # Start quiz URL
+    path('quiz/end/', end_quiz, name='end-quiz'),        # End quiz URL
+
+    path('quiz/<int:quiz_id>/leaderboard/', get_quiz_leaderboard, name='quiz-leaderboard'),
+    path('quiz/leaderboard/global/', get_global_leaderboard, name='global_leaderboard'),
+    path('post/<int:post_id>/add-image/', add_image_to_post, name='add-image-to-post'),
+    path('api/quizzes/', get_quizzes_by_topic, name='get_quizzes_by_topic'),
+    path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
+    path('notifications/add/', add_notification, name='add-notification'),
+    path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
+    # Add other URLs here...
 ]
