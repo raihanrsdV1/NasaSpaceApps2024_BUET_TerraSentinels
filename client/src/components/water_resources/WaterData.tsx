@@ -10,6 +10,8 @@ const WaterData = () => {
     const [longitude, setLongitude] = useState<number>(88.638489);
     const [maxDistance, setMaxDistance] = useState<number>(1);
     const [mapHtml, setMapHtml] = useState<string | null>(null);
+    
+
 
     // Fetch water data from backend
     const getWaterData = async () => {
