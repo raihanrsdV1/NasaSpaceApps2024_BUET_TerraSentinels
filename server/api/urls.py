@@ -26,7 +26,7 @@ urlpatterns = [
     path("water-data/", get_water_data),
 
     #weather-forecast from open weather api ##Ifti
-    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_summary),
+    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_summary, name='get_weather_summary'),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
