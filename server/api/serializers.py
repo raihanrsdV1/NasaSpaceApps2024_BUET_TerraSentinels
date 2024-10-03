@@ -47,7 +47,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'user', 'created_at', 'ratings']
+        fields = ['id', 'content', 'post', 'user', 'created_at', 'ratings', 'parent_comment']
 
     def get_ratings(self, obj):
         ratings = obj.ratings.all()  # Access the 'ratings' related_name from CommentRating

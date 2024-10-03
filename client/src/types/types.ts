@@ -99,14 +99,36 @@ export interface Filters {
     isAlert: boolean | null;
 }
 
-// If Post is also defined, keep it here for clarity
-export interface Post {
-    id: number;
-    title: string;
-    content: string;
-    created_at: string; // or Date if you parse it
-    tag_names: string[]; // or Tag[] if you have a Tag type
-    // Add other fields as necessary
-}
+// Update Post type in "../../types/types.ts"
+export interface Comment {
+	id: number;
+	content: string;
+	post: number;
+	user: number;
+	created_at: string;
+	ratings: { id: number; user: number; value: number }[];
+	parent_comment: number | null;
+	upvotes: number;  // Add this field
+	downvotes: number;  // Add this field
+	userVote: "upvoted" | "downvoted" | null; // Add this field
+  }
+  
+  export interface Post {
+	id: number;
+	user: number;
+	title: string;
+	content: string;
+	created_at: string;
+	tag_names: string[];
+	upvotes: number;
+	downvotes: number;
+	comments: Comment[]; // Array of comments
+  }
+
+  export interface Tag {
+	id: number;
+	name: string;
+  }
+  
 
   
