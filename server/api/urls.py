@@ -100,4 +100,9 @@ urlpatterns = [
     path('quiz/<int:quiz_id>/leaderboard/', get_quiz_leaderboard, name='quiz-leaderboard'),
     path('quiz/leaderboard/global/', get_global_leaderboard, name='global_leaderboard'),
     path('post/<int:post_id>/add-image/', add_image_to_post, name='add-image-to-post'),
+    path('api/quizzes/', get_quizzes_by_topic, name='get_quizzes_by_topic'),
+    path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
+    path('notifications/add/', add_notification, name='add-notification'),
+    path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
+    # Add other URLs here...
 ]
