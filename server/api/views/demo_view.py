@@ -5,10 +5,7 @@ from rest_framework import status
 
 @api_view(['GET'])
 def hello(request):
-    print("user - ", request.user)
+    print("user - ", request.user.id)
+    print(type(request.user))
     return Response({"message": "Hello from server."},
                     status=status.HTTP_200_OK)
-
-
-
-
