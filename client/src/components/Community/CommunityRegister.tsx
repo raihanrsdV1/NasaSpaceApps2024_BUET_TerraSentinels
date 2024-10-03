@@ -5,8 +5,8 @@ import axios from "../../utils/AxiosSetup"; // Adjust path if necessary
 import MapSelector from "../MapSelector"; // Adjust path if necessary
 import brand from "../../brand.png"; // Adjust path if necessary
 
-const apiKey = "AIzaSyAvwlUzN8yS6W6oWei0anmvA_bTuao_ay0";
-const mapId = "a76d6833c6f687c8";
+
+
 
 const Register: React.FC = () => {
     const navigate = useNavigate();
@@ -142,8 +142,8 @@ const Register: React.FC = () => {
                             setSelectedLat(lat);
                             setSelectedLng(lng);
                         }}
-                        apiKey={apiKey}
-                        mapId={mapId}
+                        apiKey={"AIzaSyAvwlUzN8yS6W6oWei0anmvA_bTuao_ay0"}
+                        mapId={"a76d6833c6f687c8"}
                     />
 
                     <div className="mt-4">
