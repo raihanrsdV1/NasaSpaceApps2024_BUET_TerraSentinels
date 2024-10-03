@@ -9,6 +9,7 @@ from .views.community import *
 from .views.weather_data import *
 from .views.quiz import *
 from .views.water_resource_data import get_water_data
+from .views.dashboard import get_weather_summary
 
 urlpatterns = [
     # auth
@@ -21,6 +22,9 @@ urlpatterns = [
     
     # water data
     path("water-data/", get_water_data),
+
+    #weather-forecast from open weather api ##Ifti
+    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_summary),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),

@@ -8,6 +8,14 @@ import {
 } from "react-router-dom";
 import HelloFromServer from "./components/HelloFromServer";
 import DataAnalysis from "./components/Data/DataAnalysis";
+
+import CommunityHome from './components/Community/CommunityHome';
+import CommunityRegister from './components/Community/CommunityRegister';
+import CommunityLogin from './components/Community/CommunityLogin';
+import QuizPage from './components/Quiz/QuizPage';
+import WaterData from './components/water_resources/WaterData';
+import Weather from './components/Dashboard/Weather';
+import Dashboard from './components/Dashboard/DBoard';
 import CommunityHome from "./components/Community/CommunityHome";
 import Login from "./components/Community/Login";
 import Register from "./components/Community/Register";
@@ -37,7 +45,23 @@ const App: React.FC = () => {
       </div>
 
       <ToastContainer />
+
+      <Router>
+        <Routes>
+          <Route path="/" element={<HelloFromServer />} />
+          <Route path="/data" element={<DataAnalysis />} />
+          <Route path="/community" element={<CommunityHome />} />
+          <Route path="/register" element={<CommunityRegister />} />
+          <Route path="/login" element={<CommunityLogin />} />
+          <Route path="/quiz" element={<QuizPage />} />
+          <Route path="/water_resources" element={<WaterData />} />
+          <Route path="/dashboard" element ={<Dashboard />} />  
+        </Routes>
+      </Router>
+    </Fragment>
+
     </div>
+
   );
 };
 
