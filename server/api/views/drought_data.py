@@ -148,7 +148,7 @@ def train_model(latitude,longitude,start_year,end_year):
     # Get the drought data
     df = get_drought_data(latitude,longitude,start_year,end_year)
     target = df['spi']
-    exog = df[['PS','T2M','QV2M','RH2M','WS10M','PRECTOTCORR']]
+    exog = df[['PS','T2M','QV2M','RH2M','WS10M','PRECTOTCORR','GWETTOP']]
 
     # Split the data into training and test sets
     train_size = int(len(df) * 0.8)
@@ -286,7 +286,7 @@ def predict(request):
     # Generate forecast
     forecast = best_model_fit.get_forecast(steps=steps, exog=future_exog_np)
     forecast_df = forecast.conf_int() # Get confidence intervals
-    
+
     # Add the forecasted values (predicted mean) to the DataFrame
     forecast_df['forecast'] = forecast.predicted_mean
 
