@@ -2,8 +2,6 @@ from .models import *
 from rest_framework import serializers
 
 
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     phone_no = serializers.CharField(required=True)
@@ -12,11 +10,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'password', 'phone_no', 'location_lat', 'location_lon']
+        fields = ['first_name', 'last_name', 'password',
+                  'phone_no', 'location_lat', 'location_lon']
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
+    def validate_phone_no(self, value):
+        if User.objects.filter(phone_no=value).exists():
+            raise serializers.ValidationError(
+                "A user with this phone_no already exists.")
         return value
 
     def create(self, validated_data):
@@ -25,9 +25,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
-
-
-
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -49,7 +46,8 @@ class CommentSerializer(serializers.ModelSerializer):
 
     def get_ratings(self, obj):
         ratings = obj.ratings.all()  # Access the 'ratings' related_name from CommentRating
-        return CommentRatingSerializer(ratings, many=True).data  # Serialize the ratings
+        # Serialize the ratings
+        return CommentRatingSerializer(ratings, many=True).data
 
 
 # Alert Serializer
@@ -59,14 +57,10 @@ class AlertSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
-
 
 
 class CommentRatingSerializer(serializers.ModelSerializer):
@@ -81,24 +75,21 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = ['user', 'post', 'upvote', 'rated_at']
 
 
-
-
 class SymptomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Symptom
         fields = '__all__'
 
+
 class DiseaseStatisticsSerializer(serializers.ModelSerializer):
     symptoms = SymptomSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = DiseaseStatistics
         fields = '__all__'
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notification
         fields = '__all__'
-
-
-

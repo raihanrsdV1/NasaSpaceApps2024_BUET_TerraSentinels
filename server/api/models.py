@@ -10,23 +10,24 @@ from .managers import UserManager
 ### Community features ###
 # Base User Model
 class User(AbstractUser):
-    username = models.CharField(max_length=255, unique=True)
-    email = models.EmailField(unique=True)
-    USERNAME_FIELD = "email"
-    phone_no = models.CharField(max_length=15, blank=True)
+    username = models.CharField(max_length=255, blank=True, null=True)
+    email = models.EmailField(unique=True, blank=True, null=True)
+    phone_no = models.CharField(max_length=15, unique=True)
+    USERNAME_FIELD = "phone_no"
     REQUIRED_FIELDS = []
     objects = UserManager()
+
     password = models.CharField(max_length=255)
-    location_lat = models.FloatField(default=0.00)  # Latitude of the user's location
-    location_lon = models.FloatField(default=0.00)  # Longitude of the user's location
-    region = models.CharField(max_length=255, default="Dhaka")  # Region where the user is located
+    location_lat = models.FloatField(default=0.00)
+    location_lon = models.FloatField(default=0.00)
+    region = models.CharField(max_length=255, default="Dhaka")
     first_name = models.CharField(max_length=255, blank=True)
     last_name = models.CharField(max_length=255, blank=True)
-    is_expert = models.BooleanField(default=False)  # Expert or Regular User
+    is_expert = models.BooleanField(default=False)
 
 
     def __str__(self):
-        return self.username
+        return self.phone_no
 
 # Regular User Model
 class RegularUser(User):
