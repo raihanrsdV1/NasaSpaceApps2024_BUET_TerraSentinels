@@ -32,16 +32,29 @@ const PredictionPage: React.FC = () => {
 
         const data = response.data;
 
+        // Get the current month and year
+        const currentDate = new Date();
+        const currentMonthYear = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+
         // Format the dates as "MMM YYYY" (e.g., "Jan 2024")
         const labels = data.map((d: any) =>
           new Date(d.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
         );
 
-        const forecasts = data.map((d: any) => d.forecast);  // Get forecasted values for y-axis
-        const lowerBounds = data.map((d: any) => d['lower spi'] || 0);   // Fallback to 0 if undefined
-        const upperBounds = data.map((d: any) => d['upper spi'] || 0);   // Fallback to 0 if undefined
+        // Filter the data to show only predictions from the current month onwards
+        const filteredData = data.filter((d: any) =>
+          new Date(d.date) >= currentDate
+        );
 
-        setLabels(labels);
+        const filteredLabels = filteredData.map((d: any) =>
+          new Date(d.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+        );
+
+        const forecasts = filteredData.map((d: any) => d.forecast);  // Get forecasted values for y-axis
+        const lowerBounds = filteredData.map((d: any) => d['lower spi'] || 0);   // Fallback to 0 if undefined
+        const upperBounds = filteredData.map((d: any) => d['upper spi'] || 0);   // Fallback to 0 if undefined
+
+        setLabels(filteredLabels);
         setForecastData(forecasts);
         setLowerBound(lowerBounds);
         setUpperBound(upperBounds);
