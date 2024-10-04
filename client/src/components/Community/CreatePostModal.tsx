@@ -5,7 +5,7 @@ import { Tag } from "../../types/types";
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPostCreated: (postData: { user: number; title: string; content: string; tags: number[], is_question: boolean }) => void;
+  onPostCreated: (postData: { title: string; content: string; tags: number[], is_question: boolean }) => void;
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPostCreated }) => {
@@ -15,6 +15,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
   const [content, setContent] = useState("");
   const [is_question, setIsQuestion] = useState(false);
   const [image, setImage] = useState<File | null>(null);
+
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -41,7 +42,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
     e.preventDefault(); // Prevent default form submission behavior
 
     const postData = {
-      user: 1, // Replace with actual user ID from your auth context or state
       title,
       content,
       tags: selectedTags,
@@ -94,6 +94,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
                 ))}
               </div>
             </div>
+            {/*
             <div className="mb-4">
               <label className="block mb-1">Images</label>
               <input
@@ -102,6 +103,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
                 onChange={(e) => setImage(e.target.files?.[0] || null)}
               />
             </div>
+            */}
             <div className="mb-4">
               <label className="block mb-1">Is it a question?</label>
               <input

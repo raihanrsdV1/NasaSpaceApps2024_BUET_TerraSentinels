@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CreatePostModal from "./CreatePostModal";
 import axios from "../../utils/AxiosSetup"; // Adjust the import path if necessary
+import AuthContext from "../../context/AuthContext";
 
 const RightSidebar = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const contextData = useContext(AuthContext);
+  const userId = contextData?.user?.user_id;
 
   const handleCreatePost = () => {
     setModalOpen(true); // Open the modal
@@ -37,10 +40,11 @@ const RightSidebar = () => {
     "New feature: Post sharing feature added",
   ]);
 
-  const handlePostCreated = async (postData: { user: number; title: string; content: string; tags: number[], is_question: boolean }) => {
+  const handlePostCreated = async (postData: { title: string; content: string; tags: number[], is_question: boolean }) => {
     try {
         // Call the API to create a post
-        const response = await axios.post("/post/", postData);
+        const updatedPostData = {...postData, user: userId};
+        const response = await axios.post("/post/", updatedPostData);
         console.log("Post created:", response.data);
         // Optionally, you can update the state or trigger a refresh of the post list here
     } catch (error) {
