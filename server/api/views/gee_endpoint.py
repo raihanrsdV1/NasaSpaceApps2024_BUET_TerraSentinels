@@ -14,13 +14,21 @@ from google.oauth2 import service_account
 import ee
 import geemap.core as geemap
 
+import os
+from dotenv import load_dotenv
+
+
+load_dotenv()
+PROJECT = os.getenv("PROJECT")
+
 
 # Authenticate to the Earth Engine servers
 try:
-    ee.Initialize(project='ee-mehedi72khan')
+
+    ee.Initialize(project=PROJECT)
 except Exception as e:
     ee.Authenticate()
-    ee.Initialize(project='ee-mehedi72khan')
+    ee.Initialize(project=PROJECT)
 
 
 def get_evapotranspiration_series(lat, lon, start, end):
