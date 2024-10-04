@@ -11,6 +11,7 @@ from .views.quiz import *
 from .views.water_resource_data import get_water_data
 from .views.dashboard import get_weather_summary
 from .views.dashboard import get_weather_forecast
+from .views.task_manager import *
 
 from .views.gee_endpoint import getGEEData
 
@@ -117,5 +118,10 @@ urlpatterns = [
     
     path('gee-data/', getGEEData, name='get_gee_data'),
     
+
+    #task manager
+    path('tasks/create/', create_task, name='create_task'),
+    path('tasks/delete/<int:task_id>/', delete_task, name='delete_task'),
+    path('tasks/user/<int:user_id>/', get_user_tasks, name='get_user_tasks'),
     # Add other URLs here...
 ]

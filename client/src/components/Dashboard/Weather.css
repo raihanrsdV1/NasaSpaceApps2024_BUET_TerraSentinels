@@ -1,6 +1,7 @@
 .weather-block {
     background-color: #f9f9f9;
-    padding: 20px;
+    padding: 5px;
+    /* padding-bottom: 5px; */
     border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     max-width: 100%;
@@ -24,14 +25,14 @@
     font-size: 14px;
     color: #666;
     font-weight: bold;
-    margin-bottom: 5px; /* Adjust space between the header and the remark */
+    margin-bottom: 5px; 
     text-align: center;
   }
   
   .remark {
     font-size: 20px;
     /* color: #666; */
-    margin-bottom: 20px; /* Adds space below the remark */
+    margin-bottom: 20px; 
     text-align: center;
     color: #000000;
   }
@@ -40,28 +41,28 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0 10px;
   }
   
   .temperature {
-    font-size: 30px;
+    font-size: 30px; 
     font-weight: bold;
+    margin-right: 100px;
   }
   
-  .feels-like,
-  .wind-speed,
-  .humidity {
-    font-size: 15px;
+  .feels-like, .wind-speed, .humidity {
+    font-size: 14px; 
+    margin-top: 5px; 
   }
-  
-  .icon {
-    width: 40px;
-    margin-bottom: 5px;
-  }
-  
 
-  .see-more-container {
-    text-align: right;
-  }
+ .icon {
+  width: 35px; 
+  margin-bottom: 5px;
+}
+
+.see-more-container {
+  margin-left: auto;
+}
   
   .see-more-button {
     margin-top: 15px;

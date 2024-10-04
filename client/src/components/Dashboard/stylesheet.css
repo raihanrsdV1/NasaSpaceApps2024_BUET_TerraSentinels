@@ -85,14 +85,29 @@ body {
   /* Optional: Add shadow for effect */
 }
 
+/**/
+
+/**/
+
 .full-width {
   width: 100%;
 }
 
+.half-width {
+  width: 48%;
+}
+
 .middle-row {
-  display: grid;
+  display: flex;
+  padding:10px;
+  width: 100%;
+  background-color: #ffffff;
+  align-items: center;
+  border-radius: 10px;
   grid-template-columns: 1fr 2fr;
-  gap: 20px;
+  /* gap: 20px; */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  /* overflow-x: auto;  */
 }
 
 

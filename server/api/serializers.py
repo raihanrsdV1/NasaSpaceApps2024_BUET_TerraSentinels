@@ -220,3 +220,13 @@ class BlogSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Blog.objects.create(**validated_data)
+    
+    
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = ['id', 'user', 'task', 'creation_date', 'is_completed', 'task_description']
+        read_only_fields = ['id', 'creation_date']  # 'id' and 'creation_date' should be read-only
+
+

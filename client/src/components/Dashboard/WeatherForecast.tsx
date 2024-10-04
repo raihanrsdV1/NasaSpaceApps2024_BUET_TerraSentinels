@@ -9,12 +9,17 @@ interface WeatherData {
     precipitations: number[];
 }
 
-const WeatherForecast = () => {
-    const [weatherData, setWeatherData] = useState<WeatherData | null>(null); // State to store weather data
-    const [latitude, setLatitude] = useState<number>(23.2);
-    const [longitude, setLongitude] = useState<number>(-88.5);
-    const [selectedDate, setSelectedDate] = useState<string>(''); // State to store selected date
-    const [selectedParameter, setSelectedParameter] = useState<string>('temperature'); // State to store selected parameter
+interface WeatherForecastProps {
+    latitude: number;
+    longitude: number;
+    setLatitude: (lat: number) => void;
+    setLongitude: (lon: number) => void;
+}
+
+const WeatherForecast: React.FC<WeatherForecastProps> = ({ latitude, longitude, setLatitude, setLongitude }) => {
+    const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+    const [selectedDate, setSelectedDate] = useState<string>('');
+    const [selectedParameter, setSelectedParameter] = useState<string>('temperature');
 
     const getWeatherData = async () => {
         try {
@@ -22,8 +27,8 @@ const WeatherForecast = () => {
             if (response.data) {
                 setWeatherData(response.data);
                 if (response.data.dates.length > 0) {
-                    setSelectedDate(response.data.dates[1]); // Set default date
-                    setSelectedParameter('temperature'); // Set default parameter
+                    setSelectedDate(response.data.dates[1]);
+                    setSelectedParameter('temperature');
                 }
             }
         } catch (error) {
@@ -43,7 +48,6 @@ const WeatherForecast = () => {
         getWeatherData();
     };
 
-    // Filter data by selected date
     const filteredData = weatherData.dates
         .map((date, index) => ({
             date,
@@ -51,120 +55,135 @@ const WeatherForecast = () => {
             humidity: weatherData.humidities[index],
             precipitation: weatherData.precipitations[index],
         }))
-        .filter(data => data.date.startsWith(selectedDate)); // Filter based on selected date
-
-    const minTemperature = Math.min(...weatherData.temperatures);
-    const maxTemperature = Math.max(...weatherData.temperatures);
-
-    const minHumidity = Math.min(...weatherData.humidities);
-    const maxHumidity = Math.max(...weatherData.humidities);
-
-    const minPrecipitation = Math.min(...weatherData.precipitations);
-    const maxPrecipitation = Math.max(...weatherData.precipitations);
+        .filter(data => data.date.startsWith(selectedDate));
 
     const uniqueDates = Array.from(new Set(weatherData.dates.map(date => date.split(' ')[0])));
 
     const y_domain = selectedParameter === 'temperature'
-        ? [Math.floor(minTemperature) - 1, Math.ceil(maxTemperature) + 1]
+        ? [Math.floor(Math.min(...weatherData.temperatures)) - 1, Math.ceil(Math.max(...weatherData.temperatures)) + 1]
         : selectedParameter === 'precipitation'
-            ? [Math.floor(minPrecipitation) - 1, Math.ceil(maxPrecipitation) + 1]
-            : [Math.floor(minHumidity) - 1, Math.ceil(maxHumidity) + 1]; // for humidity
-
-    const parameterOptions = [
-        { label: "Temperature", value: "temperature" },
-        { label: "Humidity", value: "humidity" },
-        { label: "Precipitation", value: "precipitation" },
-    ];
+            ? [Math.floor(Math.min(...weatherData.precipitations)) - 1, Math.ceil(Math.max(...weatherData.precipitations)) + 1]
+            : [Math.floor(Math.min(...weatherData.humidities)) - 1, Math.ceil(Math.max(...weatherData.humidities)) + 1];
 
     return (
-        <div style={{ fontSize: "20px" }}>
-            <div style={{ fontSize: "25px" }}><b>Weather Forecast Details</b></div>
+        <div
+    style={{
+        fontSize: "20px",
+        backgroundColor: "#f9f9f9", // Light background color
+        padding: "20px",
+        borderRadius: "10px", // Rounded corners
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
+        border: "1px solid #ddd", // Light border for structure
+        width: "100%",
+        margin: "20px 0"
+    }}
+>
+    <div style={{ fontSize: "25px", fontWeight: "bold", marginBottom: "15px", textAlign: "center" }}>
+        Weather Forecast Details
+    </div>
 
-            <label htmlFor="latitude-input">Latitude:&nbsp;</label>
+    <div className="flex justify-between mb-4">
+        <div>
+            <label htmlFor="latitude-input" style={{ marginRight: "10px", fontWeight: "bold" }}>Latitude:</label>
             <input
                 type="number"
                 id="latitude-input"
                 value={latitude}
                 onChange={(e) => setLatitude(parseFloat(e.target.value))}
+                style={{
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    width: "150px"
+                }}
             />
-            <div>&nbsp;</div>
-
-            <label htmlFor="longitude-input">Longitude:&nbsp;</label>
+        </div>
+        <div>
+            <label htmlFor="longitude-input" style={{ marginRight: "10px", fontWeight: "bold" }}>Longitude:</label>
             <input
                 type="number"
                 id="longitude-input"
                 value={longitude}
                 onChange={(e) => setLongitude(parseFloat(e.target.value))}
+                style={{
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    width: "150px"
+                }}
             />
-            <div>&nbsp;</div>
+        </div>
+    </div>
 
-            {/* Button to fetch weather data */}
-            <button onClick={handleFetchData}>Fetch Data</button>
+    <button
+        onClick={handleFetchData}
+        style={{
+            padding: "10px 20px",
+            backgroundColor: "#2d6a4f", // Green background
+            color: "#fff",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            transition: "background-color 0.3s",
+            marginBottom: "20px"
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#3c7e5d")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#2d6a4f")}
+    >
+        Fetch Data
+    </button>
 
-            <div>&nbsp;</div>
-            
-            <label htmlFor="date-select" >Select Date: &nbsp;&nbsp;</label>
-
+    <div className="flex justify-between mb-4">
+        <div>
+            <label style={{ marginRight: "10px", fontWeight: "bold" }}>Select Date: </label>
             <select
-                id="date-select"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
+                style={{
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    width: "200px"
+                }}
             >
                 {uniqueDates.map(date => (
-                    <option key={date} value={date}>
-                        {date}
-                    </option>
+                    <option key={date} value={date}>{date}</option>
                 ))}
             </select>
-            <div>&nbsp;</div>
-            <label htmlFor="parameter-select">Select Parameter:&nbsp;&nbsp;</label>
+        </div>
+
+        <div>
+            <label style={{ marginRight: "10px", fontWeight: "bold" }}>Select Parameter: </label>
             <select
-                id="parameter-select"
                 value={selectedParameter}
                 onChange={(e) => setSelectedParameter(e.target.value)}
+                style={{
+                    padding: "8px 12px",
+                    borderRadius: "5px",
+                    border: "1px solid #ccc",
+                    width: "200px"
+                }}
             >
-                {parameterOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
+                <option value="temperature">Temperature</option>
+                <option value="humidity">Humidity</option>
+                <option value="precipitation">Precipitation</option>
             </select>
-
-            <ResponsiveContainer width="50%" height={600}>
-                <LineChart data={filteredData}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis
-                        dataKey="date"
-                        tickFormatter={(date) => new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        ticks={filteredData.filter((_, index) => index % 2 === 0).map(item => item.date)}  
-                    />
-
-
-
-                    <YAxis
-                        domain={y_domain}
-                        ticks={Array.from({ length: Math.ceil((y_domain[1] - y_domain[0]) / 2) + 1 }, (_, i) => y_domain[0] + i * 2)} 
-                        allowDecimals={false}
-                    />
-
-
-                    <YAxis />
-                    <Tooltip />
-
-                    <Legend />
-
-
-                    <Line
-                        type="monotone"
-                        dataKey={selectedParameter}
-                        stroke="#8884d8"
-                        strokeWidth={4}
-                        name={selectedParameter.charAt(0).toUpperCase() + selectedParameter.slice(1)}
-                    />
-
-                </LineChart>
-            </ResponsiveContainer>
         </div>
+    </div>
+
+    <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={filteredData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="date" />
+            <YAxis domain={y_domain} />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey={selectedParameter} stroke="#8884d8" strokeWidth={4} />
+        </LineChart>
+    </ResponsiveContainer>
+</div>
+
     );
 };
 

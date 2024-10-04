@@ -56,7 +56,7 @@ const Weather = () => {
   }
 
   return (
-    <div className="weather-block">
+    <div className="weather-block m-5 mt-10">
       <div className="weather-info">
         <div className="weather-header">Today's Weather
           <div className="remark">
@@ -69,25 +69,25 @@ const Weather = () => {
         <div className="weather-element">
           <span className="temperature">{temperature}°C</span>
         </div>
-
+        <span>&nbsp;</span>
         {/* Feels Like */}
         <div className="weather-element">
           <img src={tempertureIcon} alt="Feels Like Icon" className="icon" />
           <span className="feels-like">Feels like: {feelsLike}°C</span>
         </div>
-
+        <span>&nbsp;</span>
         {/* Wind */}
         <div className="weather-element">
           <img src={windIcon} alt="Wind Icon" className="icon" />
           <span className="wind-speed">Wind: {windSpeed} km/h</span>
         </div>
-
+        <span>&nbsp;</span>
         {/* Humidity */}
         <div className="weather-element">
           <img src={waterIcon} alt="Humidity Icon" className="icon" />
           <span className="humidity">Humidity: {humidity}%</span>
         </div>
-
+        <span>&nbsp;</span>
         {/* See More Button */}
         <div className="see-more-container">
           <button className="see-more-button" onClick={handleModalToggle}>
@@ -98,20 +98,38 @@ const Weather = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <center>Weather Details</center>
-            <p>Temperature: {temperature}°C</p>
-            <p>Feels Like: {feelsLike}°C</p>
-            <p>Max Temperature: {tempMax}°C</p>
-            <p>Min Temperature: {tempMin}°C</p>
-            <p>Humidity: {humidity}%</p>
-            <p>Wind Speed: {windSpeed} km/h</p>
-            <p>Pressure: {pressure} hPa</p>
-            <p>Remark: {remark}</p>
-            <button className="close-button" onClick={handleModalToggle}>Close</button>
-          </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-green-300 bg-opacity-50 z-50">
+        <div className="bg-white p-8 rounded-xl shadow-xl border border-green-400 w-full max-w-md relative">
+            <div className="text-center text-2xl font-extrabold text-green-600 mb-6">
+                Weather Details
+            </div>
+    
+            <p className="text-green-800 mb-3"><strong>Temperature:</strong> {temperature}°C</p>
+            <p className="text-green-800 mb-3"><strong>Feels Like:</strong> {feelsLike}°C</p>
+            <p className="text-green-800 mb-3"><strong>Max Temperature:</strong> {tempMax}°C</p>
+            <p className="text-green-800 mb-3"><strong>Min Temperature:</strong> {tempMin}°C</p>
+            <p className="text-green-800 mb-3"><strong>Humidity:</strong> {humidity}%</p>
+            <p className="text-green-800 mb-3"><strong>Wind Speed:</strong> {windSpeed} km/h</p>
+            <p className="text-green-800 mb-6"><strong>Pressure:</strong> {pressure} hPa</p>
+            <p className="text-green-600 font-bold mb-6"><strong>Remark:</strong> {remark}</p>
+    
+            <button
+                className="absolute top-4 right-4 text-green-600 hover:text-green-800 font-bold text-2xl focus:outline-none"
+                onClick={handleModalToggle}
+            >
+                &times;
+            </button>
+            
+            <button
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg w-full mt-6"
+                onClick={handleModalToggle}
+            >
+                Close
+            </button>
         </div>
+    </div>
+    
+    
       )}
 
       {/* Modal Overlay */}

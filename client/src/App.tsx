@@ -25,7 +25,7 @@ import { AuthProvider } from "./context/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import DBoard from "./components/Dashboard/DBoard";
 import WeatherForecast from "./components/Dashboard/WeatherForecast";
-
+import WeatherSummary from "./components/Dashboard/WeatherSummary";
 const App: React.FC = () => {
   const { pathname } = useLocation();
 
@@ -45,6 +45,7 @@ const App: React.FC = () => {
             <Route path="/water_resources" element={<WaterData />} />
             <Route path="/dashboard" element={<DBoard />} />
             <Route path="/weather-forecast" element={<WeatherForecast />} />
+            <Route path="/weather-summary" element={<WeatherSummary />} />
             
           </Routes>
       </div>
