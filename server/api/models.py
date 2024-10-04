@@ -222,4 +222,13 @@ class Blog(models.Model):
         return self.title
 
 
+class Task(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the User model
+    task = models.CharField(max_length=255)  # Short task name
+    creation_date = models.DateTimeField(auto_now_add=True)  # Automatically set to now when created
+    is_completed = models.BooleanField(default=False)  # Track completion status
+    task_description = models.TextField(blank=True, null=True)  # Optional detailed description
+
+    def __str__(self):
+        return self.task  # String representation of the task
 
