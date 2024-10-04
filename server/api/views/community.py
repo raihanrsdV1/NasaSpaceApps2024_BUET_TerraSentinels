@@ -183,7 +183,7 @@ def get_all_posts(request):
     # Retrieve all posts
     posts = Post.objects.all()
     # Serialize the posts using the updated PostSerializer
-    serializer = PostSerializer(posts, many=True)
+    serializer = PostSerializer(posts.order_by("-created_at"), many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -564,7 +564,7 @@ def filter_posts(request):
         queryset = queryset.filter(alert__isnull=True)  # Post is not an alert
 
     # Serialize and return the filtered queryset (assuming you have a serializer for Post)
-    serializer = PostSerializer(queryset, many=True)
+    serializer = PostSerializer(queryset.order_by("-created_at"), many=True)
     return Response(serializer.data)
 
 
