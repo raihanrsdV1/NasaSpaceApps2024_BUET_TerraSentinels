@@ -8,7 +8,7 @@ from .managers import UserManager
 
 
 ### Community features ###
-# Base User Model
+
 class User(AbstractUser):
     username = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(unique=True, blank=True, null=True)
@@ -30,12 +30,12 @@ class User(AbstractUser):
     def __str__(self):
         return self.phone_no
 
-# Regular User Model
+
 class RegularUser(User):
     def __str__(self):
         return f'RegularUser: {self.username}'
 
-# Tag Model - For different categories/tags associated with posts and expertise
+
 class Tag(models.Model):
     name = models.CharField(max_length=100)
 
@@ -44,8 +44,8 @@ class Tag(models.Model):
 
 # Expert User Model
 class ExpertUser(User):
-    expertise_tags = models.ManyToManyField(Tag, related_name='expertise_tags')  # Tags representing areas of expertise
-    expertise_description = models.TextField()  # Description of the expertise in detail
+    expertise_tags = models.ManyToManyField(Tag, related_name='expertise_tags')  
+    expertise_description = models.TextField()  
 
     def __str__(self):
         return f'ExpertUser: {self.username}, Expertise: {self.get_expertise_tags()}'
@@ -53,38 +53,39 @@ class ExpertUser(User):
     def get_expertise_tags(self):
         return ", ".join([tag.name for tag in self.expertise_tags.all()])
 
-# Post Model - Represents a farmer's post/question
+
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to User (either RegularUser or ExpertUser)
-    title = models.CharField(max_length=255)  # Post title
-    content = models.TextField()  # Post content
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    title = models.CharField(max_length=255)  
+    content = models.TextField()  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    tags = models.ManyToManyField(Tag, blank=True)  # Tags associated with the post
-    is_question = models.BooleanField(default=False)  # Question or general post
-    is_answered = models.BooleanField(default=False)  # Answered or not
+    tags = models.ManyToManyField(Tag, blank=True)  
+    is_question = models.BooleanField(default=False) 
+    is_answered = models.BooleanField(default=False)  
 
     def __str__(self):
         return self.title
 
 class PostImage(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')  # Link to Post
-    image = models.ImageField(upload_to='post_images/')  # Field to store the image file
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='images')  
+    image = models.ImageField(upload_to='post_images/')  
 
     def __str__(self):
         return f"Image for post: {self.post.title}"
 
-# Comment Model - Represents comments or replies on a post. Recursive relationship for replies.
+
+
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')  # Link to Post
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to User
-    content = models.TextField()  # Comment content
-    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')  # Recursive reply
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments') 
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    content = models.TextField()  
+    parent_comment = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.content[:50]  # Display a snippet of the comment
+        return self.content[:50]  
 
 # Rating Model - Represents ratings given to a post
 class Rating(models.Model):
@@ -221,6 +222,16 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
 
+
+class Task(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the User model
+    task = models.CharField(max_length=255)  # Short task name
+    creation_date = models.DateTimeField(auto_now_add=True)  # Automatically set to now when created
+    is_completed = models.BooleanField(default=False)  # Track completion status
+    task_description = models.TextField(blank=True, null=True)  # Optional detailed description
+
+    def __str__(self):
+        return self.task  # String representation of the task
 
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Link to the User model

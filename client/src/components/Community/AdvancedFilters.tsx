@@ -9,7 +9,11 @@ interface AdvancedFiltersProps {
   handleSearch: () => void;
 }
 
-const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({ setFilters, filters, handleSearch }) => {
+const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({
+  setFilters,
+  filters,
+  handleSearch,
+}) => {
   const [tags, setTags] = useState<{ id: number; name: string }[]>([]);
   const [startDateLimit, setStartDateLimit] = useState<Date | null>(null);
   const [endDateLimit, setEndDateLimit] = useState<Date | null>(null);
@@ -19,28 +23,36 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({ setFilters, filters, 
 
   useEffect(() => {
     const fetchTagsAndDates = async () => {
-      setLoading(true); // Set loading to true when fetching data
-      try {
-        const [tagsResponse, dateRangeResponse] = await Promise.all([
-          axios.get("/tags/"),
-          axios.get("/posts/date-range/"), // Updated endpoint to get date range
-        ]);
-
-        setTags(tagsResponse.data); // Ensure this returns an array of { id, name }
-        const { oldest_post_date, newest_post_date } = dateRangeResponse.data;
-        const oldestDate = new Date(oldest_post_date);
-        const newestDate = new Date(newest_post_date);
-
-        setStartDateLimit(oldestDate);
-        setEndDateLimit(newestDate);
-        setInitialStartDate(oldestDate); // Store initial start date
-        setInitialEndDate(newestDate); // Store initial end date
-      } catch (error) {
-        console.error("Error fetching tags and date limits:", error);
-      } finally {
-        setLoading(false); // Set loading to false after fetching
-      }
-    };
+        setLoading(true); // Set loading to true when fetching data
+        try {
+          const [tagsResponse, dateRangeResponse] = await Promise.all([
+            axios.get("/tags/"),
+            axios.get("/posts/date-range/"), // Updated endpoint to get date range
+          ]);
+      
+          setTags(tagsResponse.data); // Ensure this returns an array of { id, name }
+          const { oldest_post_date, newest_post_date } = dateRangeResponse.data;
+          const oldestDate = new Date(oldest_post_date);
+          const newestDate = new Date(newest_post_date);
+      
+          if (oldestDate.getTime() === newestDate.getTime()) {
+            // If the dates are the same, set both to that date
+            setStartDateLimit(oldestDate);
+            setEndDateLimit(oldestDate); // or handle this case differently
+          } else {
+            setStartDateLimit(oldestDate);
+            setEndDateLimit(newestDate);
+          }
+      
+          setInitialStartDate(oldestDate); // Store initial start date
+          setInitialEndDate(newestDate); // Store initial end date
+        } catch (error) {
+          console.error("Error fetching tags and date limits:", error);
+        } finally {
+          setLoading(false); // Set loading to false after fetching
+        }
+      };
+      
 
     fetchTagsAndDates();
   }, []);
@@ -85,28 +97,31 @@ const AdvancedFilters: React.FC<AdvancedFiltersProps> = ({ setFilters, filters, 
             className="w-full p-3 border border-gray-300 rounded mb-4 focus:outline-none focus:ring-2 focus:ring-green-500"
           />
 
-          {startDateLimit && endDateLimit && (
-            <DateRangeSlider
-              startDate={startDateLimit}
-              endDate={endDateLimit}
-              selectedStartDate={filters.startDate ? new Date(filters.startDate) : null}
-              selectedEndDate={filters.endDate ? new Date(filters.endDate) : null}
-              onChange={({ startDate, endDate }) =>
-                setFilters((prevFilters) => ({
-                  ...prevFilters,
-                  startDate: startDate || null,
-                  endDate: endDate || null,
-                }))
-              }
-            />
-          )}
+{startDateLimit && endDateLimit && startDateLimit.getTime() !== endDateLimit.getTime() && (
+  <DateRangeSlider
+    startDate={startDateLimit}
+    endDate={endDateLimit}
+    selectedStartDate={filters.startDate ? new Date(filters.startDate) : null}
+    selectedEndDate={filters.endDate ? new Date(filters.endDate) : null}
+    onChange={({ startDate, endDate }) =>
+      setFilters((prevFilters) => ({
+        ...prevFilters,
+        startDate: startDate || null,
+        endDate: endDate || null,
+      }))
+    }
+  />
+)}
+
 
           <h3 className="text-lg font-semibold mb-2">Tags</h3>
           <div className="tag-selection flex flex-wrap mb-4">
             {tags.map((tag) => (
               <button
                 key={tag.id}
-                className={`tag-button m-1 px-4 py-2 rounded ${filters.tags.includes(tag.name) ? "bg-green-500 text-white" : "bg-gray-200"} hover:bg-green-600 transition duration-200`}
+                className={`tag-button m-1 px-4 py-2 rounded ${
+                  filters.tags.includes(tag.name) ? "bg-green-500 text-white" : "bg-gray-200"
+                } hover:bg-green-600 transition duration-200`}
                 onClick={() => toggleTag(tag)}
               >
                 {tag.name}

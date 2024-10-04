@@ -564,7 +564,7 @@ def filter_posts(request):
         queryset = queryset.filter(alert__isnull=True)  # Post is not an alert
 
     # Serialize and return the filtered queryset (assuming you have a serializer for Post)
-    serializer = PostSerializer(queryset, many=True)
+    serializer = PostSerializer(queryset.order_by("-created_at"), many=True)
     return Response(serializer.data)
 
 
@@ -664,7 +664,6 @@ def mark_as_answered(request, post_id):
         post = Post.objects.get(id=post_id)
     except Post.DoesNotExist:
         return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
-
     # Update the is_answered field to True
     post.is_answered = True
     post.save()

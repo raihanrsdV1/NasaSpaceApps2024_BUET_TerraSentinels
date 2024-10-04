@@ -10,6 +10,7 @@ from .views.demo_view import hello
 from .views.community import *
 from .views.weather_data import *
 from .views.quiz import *
+from .views.task_manager import *
 from .views.water_resource_data import get_water_data
 from .views.dashboard import get_weather_summary
 from .views.dashboard import get_weather_forecast
@@ -107,10 +108,8 @@ urlpatterns = [
     path('quizzes/', quiz_list, name='quiz-list'),
     path('quizzes/<int:pk>/', quiz_detail, name='quiz-detail'),
     path('quizzes/<int:quiz_id>/add-correct-option/', add_correct_option, name='add-correct-option'),
-
     path('quiz/start/', start_quiz, name='start-quiz'),  # Start quiz URL
     path('quiz/end/', end_quiz, name='end-quiz'),        # End quiz URL
-
     path('quiz/<int:quiz_id>/leaderboard/', get_quiz_leaderboard, name='quiz-leaderboard'),
     path('quiz/leaderboard/global/', get_global_leaderboard, name='global_leaderboard'),
     path('post/<int:post_id>/add-image/', add_image_to_post, name='add-image-to-post'),
@@ -118,8 +117,6 @@ urlpatterns = [
     path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
     path('notifications/add/', add_notification, name='add-notification'),
     path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
-    
-    
     path('gee-data/', getGEEData, name='get_gee_data'),
     path('heatmap/', get_heatmap, name='get_heatmap'),
 
@@ -129,5 +126,6 @@ urlpatterns = [
     path('tasks/user/<int:user_id>/', get_user_tasks, name='get_user_tasks'),
     path('predict/',predict, name='predict'),
 
+    path('posts/<int:post_id>/mark_as_answered/', mark_as_answered, name='mark_as_answered'),
     # Add other URLs here...
 ]

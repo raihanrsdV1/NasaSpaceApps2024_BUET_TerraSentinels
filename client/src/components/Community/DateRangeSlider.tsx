@@ -18,6 +18,13 @@ const DateRangeSlider: React.FC<DateRangeSliderProps> = ({
 }) => {
   const step = 86400000; // One day in milliseconds
 
+  // Ensure startDate is less than endDate
+  useEffect(() => {
+    if (startDate.getTime() >= endDate.getTime()) {
+      console.error("Start date should be less than end date");
+    }
+  }, [startDate, endDate]);
+
   // Initialize the state with start and end date timestamps
   const [values, setValues] = useState([
     selectedStartDate ? selectedStartDate.getTime() : startDate.getTime(),
@@ -70,28 +77,24 @@ const DateRangeSlider: React.FC<DateRangeSliderProps> = ({
             {children}
           </div>
         )}
-        renderThumb={({ props, index }) => (
-          <div
-            {...props}
-            style={{
-              height: "20px",
-              width: "20px",
-              padding: "4px",
-              margin: "10px",
-              backgroundColor: "#4CAF50",
-              borderRadius: "50%",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-              transition: "background-color 0.2s",
-              marginTop: index === 1 ? '-30px' : '0',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#45a049")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#4CAF50")}
-          />
-        )}
+        renderThumb={({ props }) => (
+            <div
+              {...props} // Spread props without the explicit 'key'
+              style={{
+                ...props.style, // Spread the styles from props
+                height: "20px",
+                width: "20px",
+                padding: "4px",
+                backgroundColor: "#4CAF50",
+                borderRadius: "50%",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)"
+              }}
+            />
+          )}
       />
 
       {/* Date Display */}

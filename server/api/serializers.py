@@ -29,6 +29,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+
 class PostSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(), many=True
@@ -96,6 +97,8 @@ class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = '__all__'
+
+
 
 
 class TagSerializer(serializers.ModelSerializer):
