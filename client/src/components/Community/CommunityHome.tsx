@@ -13,7 +13,8 @@ import AuthContext from "../../context/AuthContext";
 
 const CommunityHome = () => {
   const contextData = useContext(AuthContext);
-  const userId = contextData?.user;
+  const userId = contextData?.user?.user_id;
+  console.log(userId);
   const [posts, setPosts] = useState<Post[]>([]);
   const [userVotes, setUserVotes] = useState<{ [key: number]: "upvoted" | "downvoted" | null }>({});
   const [showOptions, setShowOptions] = useState<{ [key: number]: boolean }>({});
@@ -29,6 +30,19 @@ const CommunityHome = () => {
       console.error("Error fetching posts:", error);
     }
   };
+
+  const handleMarkAnswered = async (postId: number) => {
+    try {
+      await axios.patch(`/posts/${postId}/mark_as_answered/`);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId ? { ...post, is_answered: true } : post
+        )
+      );
+    } catch (error) {
+      console.error("Error marking post as answered:", error);
+    }
+  }
 
   useEffect(() => {
     fetchData();
@@ -54,7 +68,7 @@ const CommunityHome = () => {
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
-              ? { ...post, upvotes: post.upvotes - 1 }
+              ? { ...post, upvotes_count: post.upvotes_count - 1 }
               : post
           )
         );
@@ -71,8 +85,8 @@ const CommunityHome = () => {
             post.id === postId
               ? {
                   ...post,
-                  upvotes: post.upvotes + 1, // Add 1 for upvote
-                  downvotes: post.downvotes - (userVotes[postId] === "downvoted" ? 1 : 0), // Remove 1 for downvote if switching
+                  upvotes_count: post.upvotes_count + 1, // Always add 1 for upvote
+                  downvotes_count: post.downvotes_count - (userVotes[postId] === "downvoted" ? 1 : 0), // Remove 1 for downvote if switching
                 }
               : post
           )
@@ -94,7 +108,7 @@ const CommunityHome = () => {
         setPosts((prevPosts) =>
           prevPosts.map((post) =>
             post.id === postId
-              ? { ...post, downvotes: post.downvotes - 1 }
+              ? { ...post, downvotes_count: post.downvotes_count - 1 }
               : post
           )
         );
@@ -110,8 +124,8 @@ const CommunityHome = () => {
             post.id === postId
               ? {
                   ...post,
-                  downvotes: post.downvotes + 1, // Always add 1 for downvote
-                  upvotes: post.upvotes - (userVotes[postId] === "upvoted" ? 1 : 0), // Remove 1 for upvote if switching
+                  downvotes_count: post.downvotes_count + 1, // Always add 1 for downvote
+                  upvotes_count: post.upvotes_count - (userVotes[postId] === "upvoted" ? 1 : 0), // Remove 1 for upvote if switching
                 }
               : post
           )
@@ -171,8 +185,9 @@ const CommunityHome = () => {
           <div style={{ maxHeight: "calc(100vh - 200px)", overflowY: "scroll" }}>
             {posts.length > 0 ? (
               posts.map((post) => (
-                <div key={post.id} className="mb-4 p-4 border border-gray-300 rounded-lg shadow">
+                <div key={post.id} className="relative mb-4 p-4 border border-gray-300 rounded-lg shadow">
                   <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <p className="text-sm text-gray-500">By {post.user_info.first_name} {post.user_info.last_name}</p>
                   <p className="text-sm text-gray-500">
                     {new Date(post.created_at).toLocaleDateString(undefined, {
                       year: 'numeric',
@@ -209,7 +224,7 @@ const CommunityHome = () => {
 
                     {/* Display Net Votes */}
                     <span className="mx-2">
-                      {post.upvotes - post.downvotes}
+                      {post.upvotes_count - post.downvotes_count}
                     </span>
 
                     {/* Downvote Button */}
@@ -231,24 +246,43 @@ const CommunityHome = () => {
                         </button>
 
                         {showOptions[post.id] && (
-                          <div className="absolute right-0 mt-2 w-20 bg-white border rounded shadow-lg">
+                          <div className="absolute right-0 mt-2 w-25 bg-white border rounded shadow-lg">
                             <button
                               onClick={() => handleEditPost(post)}
-                              className="block w-full text-left px-4 py-2 bg-blue-600 text-white hover:bg-blue-700"
+                              className="block w-full text-left px-4 py-2 hover:bg-blue-700"
                             >
                               Edit
                             </button>
                             <button
                               onClick={() => handleDeletePost(post.id)}
-                              className="block w-full text-left px-4 py-2 bg-red-600 text-white hover:bg-red-700"
+                              className="block w-full text-left px-4 py-2 hover:bg-red-700"
                             >
                               Delete
                             </button>
+                            {post.is_question && !post.is_answered && (
+                              <button
+                                onClick={() => handleMarkAnswered(post.id)}
+                                className="block w-full text-left px-4 py-2 hover:bg-green-700"
+                              >
+                                Mark Answered
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
                     )}
                   </div>
+
+                  {post.is_question && (
+                    <div className="absolute top-2 right-2 flex space-x-2">
+                      <p className="border bg-green-500 text-white rounded px-2 py-1 text-base font-semibold">
+                        {post.is_answered ? "Answered" : "Unanswered"}
+                      </p>
+                      <p className="border bg-red-500 text-white rounded px-2 py-1 text-base font-semibold">
+                        Question
+                      </p>
+                    </div>
+                  )}
 
                   {/* Comments Section */}
                   <CommentSection postId={post.id} />

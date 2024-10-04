@@ -281,7 +281,7 @@ def predict(request):
     # Add 6 months to the current date
     new_date = current_date + pd.DateOffset(months=6)
 
-    steps=(new_date.year-end_year)*12 + new_date.month-12
+    steps = (new_date.year - int(end_year)) * 12 + new_date.month - 12
 
     # Get the exog data
     features = ['PS','T2M','QV2M','RH2M','WS10M','PRECTOTCORR','GWETTOP']

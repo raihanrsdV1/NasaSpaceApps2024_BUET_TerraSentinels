@@ -15,7 +15,7 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
   const [editTo, setEditTo] = useState<number | null>(null); // Add this line
   const [editContent, setEditContent] = useState(""); // Add this line
   const contextData = useContext(AuthContext);
-  const userId = contextData?.user;
+  const userId = contextData?.user?.user_id;
 
   const replyRef = useRef<HTMLDivElement | null>(null);
   const editRef = useRef<HTMLDivElement | null>(null);
@@ -198,7 +198,7 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
 
           <button
             onClick={() => handleReply(comment.id)}
-            className="text-blue-500 text-sm mt-2 rounded-lg border border-blue-500 px-1 py-1"
+            className="bg-black text-white text-sm mt-2 mx-1 rounded-lg border border-black px-1 py-1"
           >
             Reply
           </button>
@@ -206,10 +206,10 @@ const CommentSection = ({ postId }: CommentSectionProps) => {
           {/* Add Edit Button */}
           {comment.user === userId && ( // Check if the user owns the comment
             <>
-                <button onClick={() => handleEdit(comment)} className="text-green-500 text-sm mt-2 ml-2 rounded-lg border border-green-500 px-1 py-1">
+                <button onClick={() => handleEdit(comment)} className="bg-black text-white text-sm mt-2 mx-1 rounded-lg border border-black px-1 py-1">
                     Edit
                 </button>
-                <button onClick={() => handleDelete(comment.id)} className="text-red-500 text-sm mt-2 ml-2 rounded-lg border border-red-500 px-1 py-1">
+                <button onClick={() => handleDelete(comment.id)} className="bg-black text-white text-sm mt-2 mx-1 rounded-lg border border-black px-1 py-1">
                     Delete
                 </button>
             </>

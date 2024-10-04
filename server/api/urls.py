@@ -49,6 +49,7 @@ urlpatterns = [
     path('comment_ratings/add/', add_comment_rating, name='add_comment_rating'),
     path('comment_ratings/undo/', undo_comment_rating, name='undo_comment_rating'),
     path('comment_ratings/delete/<int:id>/', delete_comment_rating, name='delete_comment_rating'),
+    path('posts/<int:post_id>/mark_as_answered/', mark_as_answered, name='mark_as_answered'),
 
     # Post URLs
     path('post/delete/<int:post_id>/', delete_post, name='delete_post'),

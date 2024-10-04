@@ -16,7 +16,7 @@ def post_community(request):
 
     # Validate the serializer with the data
     if serializer.is_valid():
-        serializer.save() 
+        serializer.save()
         return Response({"message": "Post created successfully.", "post": serializer.data},
                         status=status.HTTP_201_CREATED)
 
@@ -33,7 +33,7 @@ def get_post(request, post_id):
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Post.DoesNotExist:
         return Response({"error": "Post not found"}, status=status.HTTP_404_NOT_FOUND)
-    
+
 
 @api_view(['POST'])
 def post_comment(request):
@@ -154,7 +154,7 @@ def add_comment_rating(request):
 # Undo a rating (remove the user's rating from a comment)
 @api_view(['DELETE'])
 def undo_comment_rating(request):
-    user = request.data["user"] 
+    user = request.data["user"]
     data = request.data
 
     try:
@@ -183,7 +183,7 @@ def get_all_posts(request):
     # Retrieve all posts
     posts = Post.objects.all()
     # Serialize the posts using the updated PostSerializer
-    serializer = PostSerializer(posts, many=True)
+    serializer = PostSerializer(posts.order_by("-created_at"), many=True)
 
     return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -367,15 +367,15 @@ def edit_alert(request, alert_id):
 def add_alert(request):
     data = request.data
     serializer = AlertSerializer(data=data)
-    
+
     if serializer.is_valid():
-        alert = serializer.save() 
+        alert = serializer.save()
 
         # Get users within 50KM radius
         users_nearby = get_users_within_radius(
             alert.alert_location_lat,
             alert.alert_location_lon,
-            radius_km=50 
+            radius_km=50
         )
 
         for user in users_nearby:
@@ -388,10 +388,10 @@ def add_alert(request):
                 is_alert=True,
                 is_seen=False
             )
-            
-            send_sms(user.phone_no, f"An alert has been created near your location: {alert.post.title}")
-            
-        
+
+            send_sms(user.phone_no, f"An alert has been created near your location: {
+                     alert.post.title}")
+
         return Response({"message": "Alert created and notifications sent.", "alert": serializer.data},
                         status=status.HTTP_201_CREATED)
 
@@ -656,3 +656,19 @@ def add_notification(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['PATCH'])
+def mark_as_answered(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+    # Update the is_answered field to True
+    post.is_answered = True
+    post.save()
+
+    # Return the updated post using the existing PostSerializer
+    serializer = PostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)

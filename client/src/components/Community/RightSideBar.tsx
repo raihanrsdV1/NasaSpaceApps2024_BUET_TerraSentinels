@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CreatePostModal from "./CreatePostModal";
 import axios from "../../utils/AxiosSetup"; // Adjust the import path if necessary
+import AuthContext from "../../context/AuthContext";
 
 const RightSidebar = () => {
   const [isModalOpen, setModalOpen] = useState(false);
+  const contextData = useContext(AuthContext);
+  const userId = contextData?.user?.user_id;
 
   const handleCreatePost = () => {
     setModalOpen(true); // Open the modal
@@ -37,17 +40,24 @@ const RightSidebar = () => {
     "New feature: Post sharing feature added",
   ]);
 
-  const handlePostCreated = async (postData: { user: number; title: string; content: string; tags: number[] }) => {
+  const handlePostCreated = async (postData: {
+    title: string;
+    content: string;
+    tags: number[];
+    is_question: boolean;
+  }) => {
     try {
-        // Call the API to create a post
-        const response = await axios.post("/post/", postData);
-        console.log("Post created:", response.data);
-        // Optionally, you can update the state or trigger a refresh of the post list here
+      // Call the API to create a post
+      const updatedPostData = { ...postData, user: userId };
+      const response = await axios.post("/post/", updatedPostData);
+      console.log("Post created:", response.data);
+      // Optionally, you can update the state or trigger a refresh of the post list here
     } catch (error) {
-        console.error("Error creating post:", error);
-        // Optionally, handle error (e.g., show a notification to the user)
+      console.error("Error creating post:", error);
+      // Optionally, handle error (e.g., show a notification to the user)
     } finally {
-        handleCloseModal(); // Close the modal after the post is created
+      handleCloseModal(); // Close the modal after the post is created
+      window.location.reload(); // Reload the page to show the new post
     }
   };
 
@@ -60,10 +70,14 @@ const RightSidebar = () => {
         Create Post
       </button>
 
+      <button className="mb-4 py-2 px-4 text-white bg-red-500 rounded hover:bg-red-600">Create Alert</button>
+
+      <button className="mb-4 py-2 px-4 text-white bg-red-500 rounded hover:bg-red-600">Export Alerts</button>
+
       {/* Notifications Section */}
       <div className="mb-4 flex flex-col w-full">
         <h2 className="font-bold text-lg text-center mb-2">Notifications</h2>
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '250px' }}>
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: "180px" }}>
           {notifications.length === 0 ? (
             <p>No new notifications.</p>
           ) : (
@@ -79,7 +93,7 @@ const RightSidebar = () => {
       {/* Alerts Section */}
       <div className="flex flex-col w-full">
         <h2 className="font-bold text-lg text-center mb-2">Alerts</h2>
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '250px' }}>
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: "180px" }}>
           {alerts.length === 0 ? (
             <p>No alerts at the moment.</p>
           ) : (
