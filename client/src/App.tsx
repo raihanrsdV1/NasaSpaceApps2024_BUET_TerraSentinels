@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Fragment, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import {
   BrowserRouter as Router,
@@ -26,6 +26,8 @@ import { toast, ToastContainer } from "react-toastify";
 import DBoard from "./components/Dashboard/DBoard";
 import WeatherForecast from "./components/Dashboard/WeatherForecast";
 import WeatherSummary from "./components/Dashboard/WeatherSummary";
+import DroughtPrediction from "./components/Extremities/DroughtPrediction";
+
 const App: React.FC = () => {
   const { pathname } = useLocation();
 
@@ -45,7 +47,7 @@ const App: React.FC = () => {
             <Route path="/water_resources" element={<WaterData />} />
             <Route path="/dashboard" element={<DBoard />} />
             <Route path="/weather" element={<Weather />} />
-            
+            <Route path="/extremities" element={<DroughtPrediction />} />
            
             
           </Routes>
@@ -55,8 +57,8 @@ const App: React.FC = () => {
 
     
 
+      <ToastContainer />
     </div>
-
   );
 };
 

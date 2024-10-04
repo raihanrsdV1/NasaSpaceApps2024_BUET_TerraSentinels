@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .views.drought_data import predict
 from .views.auth_view import MyTokenObtainPairView, register
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -13,7 +15,7 @@ from .views.dashboard import get_weather_summary
 from .views.dashboard import get_weather_forecast
 from .views.task_manager import *
 
-from .views.gee_endpoint import getGEEData
+from .views.gee_endpoint import *
 
 urlpatterns = [
     # auth
@@ -117,11 +119,13 @@ urlpatterns = [
     
     
     path('gee-data/', getGEEData, name='get_gee_data'),
-    
+    path('heatmap/', get_heatmap, name='get_heatmap'),
 
     #task manager
     path('tasks/create/', create_task, name='create_task'),
     path('tasks/delete/<int:task_id>/', delete_task, name='delete_task'),
     path('tasks/user/<int:user_id>/', get_user_tasks, name='get_user_tasks'),
+    path('predict/',predict, name='predict'),
+
     # Add other URLs here...
 ]

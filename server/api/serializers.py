@@ -31,31 +31,29 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True)  # Use tag IDs for writing
+        queryset=Tag.objects.all(), many=True)
     tag_names = serializers.SerializerMethodField(
-        read_only=True)  # Use tag names for reading
-    upvotes_count = serializers.SerializerMethodField()  # Count of upvotes
-    downvotes_count = serializers.SerializerMethodField()  # Count of downvotes
+        read_only=True)
+    upvotes_count = serializers.SerializerMethodField()
+    downvotes_count = serializers.SerializerMethodField()
     user_info = UserRegistrationSerializer(
-        source='user')  # Include user information
+        source='user')
 
     class Meta:
         model = Post
         fields = ['id', 'user', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names',
-                  # Include user_info
                   'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']
 
     def get_tag_names(self, obj):
-        return [tag.name for tag in obj.tags.all()]  # Return tag names
+        return [tag.name for tag in obj.tags.all()]
 
     def get_upvotes_count(self, obj):
-        return obj.ratings.filter(upvote=True).count()  # Count upvotes
+        return obj.ratings.filter(upvote=True).count()
 
     def get_downvotes_count(self, obj):
-        return obj.ratings.filter(upvote=False).count()  # Count downvotes
+        return obj.ratings.filter(upvote=False).count()
 
     def get_images(self, obj):
-        # Return image URLs
         return [image.image.url for image in obj.images.all()]
 
 
@@ -69,12 +67,10 @@ class CommentSerializer(serializers.ModelSerializer):
                   'created_at', 'ratings', 'parent_comment']
 
     def get_ratings(self, obj):
-        ratings = obj.ratings.all()  # Access the 'ratings' related_name from CommentRating
-        # Serialize the ratings
+        ratings = obj.ratings.all()
         return CommentRatingSerializer(ratings, many=True).data
 
 
-# Alert Serializer
 class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
@@ -90,7 +86,7 @@ class TagSerializer(serializers.ModelSerializer):
 class CommentRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentRating
-        fields = ['id', 'user', 'value']  # Fields to include in the response
+        fields = ['id', 'user', 'value']
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -124,45 +120,39 @@ class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
         fields = ['id', 'name', 'description', 'created_at',
-                  'user']  # Include fields you want to expose
+                  'user']
 
     def create(self, validated_data):
         return Topic.objects.create(**validated_data)
 
 
-# Option Serializer
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
-        fields = ['id', 'text']  # Include fields you want to expose
+        fields = ['id', 'text']
 
     def create(self, validated_data):
         return Option.objects.create(**validated_data)
 
-# Quiz Serializer
-
 
 class QuizSerializer(serializers.ModelSerializer):
-    options = OptionSerializer(many=True)  # Add this line to include options
+    options = OptionSerializer(many=True)
 
     class Meta:
         model = Quiz
         fields = ['id', 'topic', 'question', 'correct_answer',
-                  'options', 'explanation']  # Include options in fields
+                  'options', 'explanation']
 
     def create(self, validated_data):
-        # Extract options from the data
         options_data = validated_data.pop('options', [])
-        # Create the quiz instance
         quiz = Quiz.objects.create(**validated_data)
-        for option_data in options_data:  # Create options
-            # Associate options with the quiz
+        for option_data in options_data:
             Option.objects.create(quiz=quiz, **option_data)
         return quiz
 
     def update(self, instance, validated_data):
         options_data = validated_data.pop(
-            'options', None)  # Extract options if provided
+            'options', None)
         instance.topic = validated_data.get('topic', instance.topic)
         instance.question = validated_data.get('question', instance.question)
         instance.correct_answer = validated_data.get(
@@ -170,26 +160,22 @@ class QuizSerializer(serializers.ModelSerializer):
         instance.save()
 
         if options_data is not None:
-            # Clear existing options and add new ones
-            instance.options.all().delete()  # Delete current options
+            instance.options.all().delete()
             for option_data in options_data:
-                # Create new options
                 Option.objects.create(quiz=instance, **option_data)
 
         return instance
 
 
 class QuizSolveSerializer(serializers.ModelSerializer):
-    time_interval = serializers.SerializerMethodField()  # Add field for time interval
-    # Add field for number of attempts
+    time_interval = serializers.SerializerMethodField()
     num_attempts = serializers.SerializerMethodField()
-    # Include user information, but make sure it's read-only
     user_info = UserRegistrationSerializer(source='user', read_only=True)
 
     class Meta:
         model = QuizSolve
         fields = ['id', 'user', 'user_info', 'quiz', 'chosen_option', 'quiz_taking_start',
-                  'quiz_time_end', 'time_interval', 'num_attempts']  # Include new fields
+                  'quiz_time_end', 'time_interval', 'num_attempts']
 
     def get_time_interval(self, obj):
         # Convert both times to timezone-aware if they are not already
@@ -211,7 +197,6 @@ class QuizSolveSerializer(serializers.ModelSerializer):
         return QuizSolve.objects.create(**validated_data)
 
 
-# Blog Serializer
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog

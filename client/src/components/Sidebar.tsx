@@ -8,7 +8,7 @@ const Sidebar = () => {
     }, []);
     
     return (
-        <div className="w-1/6 bg-gray-800 mt-20"> {/* Add margin-top to account for navbar height */}
+        <div className="w-1/6 h-screen bg-gray-800 mt-20"> {/* Add margin-top to account for navbar height */}
             <div className="fixed flex-col items-start p-4"> {/* Added padding for spacing */}
                 <ul className="flex flex-col">
                     <li 
@@ -17,12 +17,12 @@ const Sidebar = () => {
                     >
                         Dashboard
                     </li>
-                    <li 
+                    {/* <li 
                         className="m-2 p-3 text-white cursor-pointer transform transition-all duration-300 hover:translate-x-2 hover:text-yellow-400 hover:font-bold"
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/heat_map")}
                     >
                         Interactive Maps
-                    </li>
+                    </li> */}
                     <li 
                         className="m-2 p-3 text-white cursor-pointer transform transition-all duration-300 hover:translate-x-2 hover:text-yellow-400 hover:font-bold"
                         onClick={() => navigate("/data")}

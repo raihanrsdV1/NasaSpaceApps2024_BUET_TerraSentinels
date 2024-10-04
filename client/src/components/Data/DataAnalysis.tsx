@@ -11,7 +11,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import dayjs from 'dayjs';
 
-import nasa_logo from "./nasa_logo.png";
+import brand_logo from "./brand.png";
 
 
 
@@ -167,15 +167,15 @@ const DataAnalysis: React.FC<WeatherDataProps> = () => {
 
       // Add the NASA logo to the PDF
       const logoX = 10;
-      const logoY = 5;
-      const logoWidth = 20;
-      const logoHeight = 20;
-      pdf.addImage(nasa_logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
+      const logoY = 10;
+      const logoWidth = 30;
+      const logoHeight = 8;
+      pdf.addImage(brand_logo, 'PNG', logoX, logoY, logoWidth, logoHeight);
 
       // Add the title text below the logo
    
-      pdf.text(`${selectedParameter} Data Analysis`, 40, logoY + 10); 
-      pdf.text('powered by NASA Earth Data', 40, logoY + 20); 
+      pdf.text(`${selectedParameter} Data Analysis`, 50, logoY); 
+      pdf.text('powered by NASA Earth Data', 50, logoY + 10); 
 
       // Add the chart image to the PDF
       const chartX = 10;
