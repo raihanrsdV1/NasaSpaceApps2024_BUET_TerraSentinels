@@ -42,6 +42,7 @@ const App: React.FC = () => {
           <Route path="/quiz" element={<QuizPage />} />
           <Route path="/water_resources" element={<WaterData />} />
           <Route path="/extremities" element={<DroughtPrediction />} />
+          <Route path="/hello" element={<HelloFromServer />} />
         </Routes>
       </div>
 
