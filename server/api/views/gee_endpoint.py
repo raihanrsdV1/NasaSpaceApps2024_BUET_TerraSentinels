@@ -17,10 +17,10 @@ import geemap.core as geemap
 
 # Authenticate to the Earth Engine servers
 try:
-    ee.Initialize(project='nasa-space-apps-24')
+    ee.Initialize(project='ee-mehedi72khan')
 except Exception as e:
     ee.Authenticate()
-    ee.Initialize(project='nasa-space-apps-24')
+    ee.Initialize(project='ee-mehedi72khan')
 
 
 def get_evapotranspiration_series(lat, lon, start, end):
