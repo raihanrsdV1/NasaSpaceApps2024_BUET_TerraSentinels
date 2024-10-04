@@ -1,4 +1,6 @@
 from django.urls import path
+
+from .views.drought_data import predict
 from .views.auth_view import MyTokenObtainPairView, register
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -9,6 +11,9 @@ from .views.community import *
 from .views.weather_data import *
 from .views.quiz import *
 from .views.water_resource_data import get_water_data
+from .views.dashboard import get_weather_summary
+
+from .views.gee_endpoint import getGEEData
 
 urlpatterns = [
     # auth
@@ -21,6 +26,9 @@ urlpatterns = [
     
     # water data
     path("water-data/", get_water_data),
+
+    #weather-forecast from open weather api ##Ifti
+    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_summary),
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
@@ -104,5 +112,11 @@ urlpatterns = [
     path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
     path('notifications/add/', add_notification, name='add-notification'),
     path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
+    
+    
+    path('gee-data/', getGEEData, name='get_gee_data'),
+    
+    # Prediction URLs
+    path('predict/',predict, name='predict'),
     # Add other URLs here...
 ]

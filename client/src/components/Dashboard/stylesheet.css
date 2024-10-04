@@ -1,0 +1,123 @@
+/* General Dashboard Styling */
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+  }
+  
+  .dashboard {
+    display: flex;
+    height: 100vh;
+  }
+  
+  /* Sidebar Styling */
+  .sidebar {
+    background-color: #ffffff;
+    color: #000000;
+    width: 250px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .logo img {
+    width: 60px;
+    margin-bottom: 10px;
+  }
+  
+  .logo h2 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+  
+  .logo p {
+    font-size: 0.9rem;
+    margin-top: 5px;
+  }
+  
+  .menu {
+    flex-grow: 1;
+  }
+  
+  .menu-item {
+    padding: 15px 10px;
+    margin: 10px 0;
+    background-color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .menu-item:hover {
+    background-color: #ffffff;
+  }
+  
+  .dark-mode-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9rem;
+  }
+  
+  .dark-mode-toggle input {
+    cursor: pointer;
+  }
+  
+  /* Main Content Styling */
+  .main-content {
+    flex-grow: 1;
+    padding: 20px;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  /* Top Row: Weather and Suggestions */
+  .top-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+  }
+  
+  .middle-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+  }
+  
+
+  .bottom-row {
+    display: grid;
+  }
+  
+
+  .weather-block,
+  .suggestions-block,
+  .water-sources-block,
+  .crop-production-block,
+  .alerts-block {
+    background-color: #ffffff;
+    color: #100c0c;
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .weather-header, .suggestions-header, .water-sources-header, .crop-header, .alerts-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  .see-more {
+    color: #007bff;
+    cursor: pointer;
+  }
+  
