@@ -38,15 +38,35 @@ export interface Filters {
   isAlert: boolean | null;
 }
 
+// Update Post type in "../../types/types.ts"
+export interface Comment {
+  id: number;
+  content: string;
+  post: number;
+  user: number;
+  created_at: string;
+  ratings: { id: number; user: number; value: number }[];
+  parent_comment: number | null;
+  upvotes: number; // Add this field
+  downvotes: number; // Add this field
+  userVote: "upvoted" | "downvoted" | null; // Add this field
+}
+
 export interface Post {
   id: number;
+  user: number;
   title: string;
   content: string;
   created_at: string;
-  updated_at: string;
   tag_names: string[];
-  is_question: boolean;
-  is_answered: boolean;
+  upvotes: number;
+  downvotes: number;
+  comments: Comment[]; // Array of comments
+}
+
+export interface Tag {
+  id: number;
+  name: string;
 }
 
 export interface Alert {
