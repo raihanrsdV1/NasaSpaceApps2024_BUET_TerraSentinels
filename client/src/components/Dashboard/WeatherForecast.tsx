@@ -57,7 +57,7 @@ const WeatherForecast: React.FC<WeatherForecastProps> = ({ latitude, longitude, 
         }))
         .filter(data => data.date.startsWith(selectedDate));
 
-    const uniqueDates = Array.from(new Set(weatherData.dates.map(date => date.split(' ')[0])));
+    const uniqueDates = Array.from(new Set(weatherData.dates.map(date => date.split(' ')[0]))).slice(1);
 
     const y_domain = selectedParameter === 'temperature'
         ? [Math.floor(Math.min(...weatherData.temperatures)) - 1, Math.ceil(Math.max(...weatherData.temperatures)) + 1]
