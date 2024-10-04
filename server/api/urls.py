@@ -13,7 +13,7 @@ from .views.quiz import *
 from .views.water_resource_data import get_water_data
 from .views.dashboard import get_weather_summary
 
-from .views.gee_endpoint import getGEEData
+from .views.gee_endpoint import *
 
 urlpatterns = [
     # auth
@@ -115,6 +115,7 @@ urlpatterns = [
     
     
     path('gee-data/', getGEEData, name='get_gee_data'),
+    path('heatmap/', get_heatmap, name='get_heatmap'),
     
     # Prediction URLs
     path('predict/',predict, name='predict'),

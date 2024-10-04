@@ -12,9 +12,15 @@ from django.http import JsonResponse
 
 from google.oauth2 import service_account
 import ee
+import geemap.core as geemap
 
-# ee.Authenticate()
-# ee.Initialize(project='nasa-space-apps-24')
+
+# Authenticate to the Earth Engine servers
+try:
+    ee.Initialize(project='nasa-space-apps-24')
+except Exception as e:
+    ee.Authenticate()
+    ee.Initialize(project='nasa-space-apps-24')
 
 
 def get_evapotranspiration_series(lat, lon, start, end):
@@ -89,7 +95,6 @@ def get_soil_moisture_series(lat, lon, start, end):
     # Return the features list as a JSON response
     return Response(property_list, status=status.HTTP_200_OK)
 
-
 def get_vegetation_indices_series(lat, lon, start, end):
     # Load the MODIS NDVI dataset
     collection = ee.ImageCollection('MODIS/061/MOD13A1').select('NDVI').filterDate(start, end)
@@ -152,3 +157,70 @@ def getGEEData(request):
         return JsonResponse({"error": "Invalid parameter values."}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+def get_surface_temperature_heatmap(start, end):
+    try:
+        # Convert start and end to ee.Date
+        start_date = ee.Date(start)
+        end_date = ee.Date(end)
+        
+        # Get the image collection for the specified date range
+        dataset = ee.ImageCollection('MODIS/061/MOD11A1') \
+                    .filterDate(start_date, end_date)
+        
+        # Select the 'LST_Day_1km' band for land surface temperature
+        land_surface_temperature = dataset.select('LST_Day_1km')
+        
+        # Define visualization parameters
+        land_surface_temperature_vis = {
+            'min': 13000.0,
+            'max': 16500.0,
+            'palette': [
+                '040274', '040281', '0502a3', '0502b8', '0502ce', '0502e6',
+                '0602ff', '235cb1', '307ef3', '269db1', '30c8e2', '32d3ef',
+                '3be285', '3ff38f', '86e26f', '3ae237', 'b5e22e', 'd6e21f',
+                'fff705', 'ffd611', 'ffb613', 'ff8b13', 'ff6e08', 'ff500d',
+                'ff0000', 'de0101', 'c21301', 'a71001', '911003'
+            ]
+        }
+        
+        # Extract data to a format that can be returned as JSON
+        
+        
+        # Prepare the response data
+        data = {
+            "temperature_data": land_surface_temperature,
+            "visualization_params": land_surface_temperature_vis
+        }
+
+        return data
+
+    except Exception as e:
+        print(e)
+
+
+
+# API View to handle the heatmap request
+@api_view(['GET'])
+def get_heatmap(request):
+    
+    start = request.query_params.get('start')
+    end = request.query_params.get('end')
+    parameter = request.query_params.get('parameter')
+
+
+    
+    # Check if the required parameters are provided
+    if not start or not end or not parameter:
+        return Response({"error": "Missing required parameters."}, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Get the data from the GEE API
+    if parameter == "TS":
+        data = get_surface_temperature_heatmap(start, end)
+        return Response(data, status=status.HTTP_200_OK)
+    
+    return Response({"message": "This is a test response from the backend."}, status=status.HTTP_200_OK)
