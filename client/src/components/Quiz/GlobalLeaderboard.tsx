@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "../../utils/AxiosSetup";
 
 interface GlobalLeaderboardEntry {
-    username: string;
+    first_name: string;
     correct_solved: number;
     cumulative_time: number; // Store as number for easier formatting
     total_time: number; // Store as number for easier formatting
@@ -66,7 +66,7 @@ const GlobalLeaderboard: React.FC<GlobalLeaderboardProps> = ({ onClose }) => {
                         {leaderboard.map((entry, index) => (
                             <tr key={index} className={`${index % 2 === 0 ? "bg-green-100" : "bg-white"} hover:bg-green-200 transition-all`}>
                                 <td className="px-4 py-2 text-center">{index + 1}</td>
-                                <td className="px-4 py-2 text-center">{entry.username}</td>
+                                <td className="px-4 py-2 text-center">{entry.first_name}</td>
                                 <td className="px-4 py-2 text-center">{entry.correct_solved}</td>
                                 <td className="px-4 py-2 text-center">{formatTime(entry.cumulative_time)}</td>
                                 <td className="px-4 py-2 text-center">{formatTime(entry.total_time)}</td>

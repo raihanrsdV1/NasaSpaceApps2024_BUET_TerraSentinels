@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../utils/AxiosSetup";
 import { Line } from "react-chartjs-2";
+import { ChartOptions } from 'chart.js';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -14,6 +15,7 @@ import {
 import SPITable from "./SPITable";
 import Navbar from "../Navbar";
 import Sidebar from "../Sidebar";
+import { YAxis } from "recharts";
 
 // Register the required components
 ChartJS.register(
@@ -111,16 +113,16 @@ const PredictionPage: React.FC = () => {
     ],
   };
 
-  const chartOptions = {
+  const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     scales: {
       y: {
         title: {
           display: true,
-          text: "SPI", // Label for the y-axis
+          text: 'SPI',
           font: {
-            weight: "bold",
+            weight: 'bold',
             size: 16,
           },
         },

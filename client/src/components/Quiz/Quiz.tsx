@@ -41,7 +41,7 @@ const Quiz: React.FC<QuizProps> = ({ selectedQuiz, onQuizEnd, onGoBackToList }) 
   const [showConfetti, setShowConfetti] = useState<boolean>(false);
   const [timerRunning, setTimerRunning] = useState<boolean>(false);
   const [quizCompleted, setQuizCompleted] = useState<boolean>(false); // State to track if quiz is completed
-  const [userId, setUserId] = useState<number | null>(7); // Add user ID state
+  const [userId, setUserId] = useState<number | null>(3); // Add user ID state
   const startQuiz = async () => {
     
     try {

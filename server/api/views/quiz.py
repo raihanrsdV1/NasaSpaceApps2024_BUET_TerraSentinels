@@ -192,7 +192,8 @@ def start_quiz(request):
         'user': user_id,  # Pass the user ID directly
         'quiz': quiz_id,  # Pass the quiz ID directly
     }
-
+    print("calls this")
+    print(quiz_solve_data)
     # Serialize the data and save the instance
     serializer = QuizSolveSerializer(data=quiz_solve_data)
 

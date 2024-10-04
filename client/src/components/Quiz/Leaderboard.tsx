@@ -4,7 +4,7 @@ import axios from "../../utils/AxiosSetup";
 interface LeaderboardEntry {
   id: number;
   user_info: {
-    username: string;
+    phone_no: string;
   };
   quiz_taking_start: string;
   quiz_time_end: string;
@@ -46,7 +46,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ quizId }) => {
               } border-b`}
             >
               <td className="p-4">{index + 1}</td> {/* Rank */}
-              <td className="p-4">{entry.user_info.username}</td> {/* Username */}
+              <td className="p-4">{entry.user_info.phone_no}</td> {/* Username */}
               <td className="p-4">{new Date(entry.quiz_taking_start).toLocaleString()}</td> {/* Quiz Start Time */}
               <td className="p-4">{new Date(entry.quiz_time_end).toLocaleString()}</td> {/* Quiz End Time */}
             </tr>
