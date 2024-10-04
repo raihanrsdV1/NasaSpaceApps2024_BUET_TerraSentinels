@@ -96,6 +96,7 @@ urlpatterns = [
     
     # Blog URLs
     path('blogs/', create_blog, name='create_blog'),  # Create Blog
+    path('blogs/lot/', create_blogs, name='create_blogs'),
     path('blogs/<int:pk>/', edit_blog, name='edit_blog'),  # Edit Blog
     path('blogs/<int:pk>/delete/', delete_blog, name='delete_blog'),  # Delete Blog
 
