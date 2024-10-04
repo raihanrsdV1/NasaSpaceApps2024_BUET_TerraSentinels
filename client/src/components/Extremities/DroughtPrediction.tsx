@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend
 } from 'chart.js';
+import SPITable from './SPITable';
 
 // Register the required components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -32,16 +33,29 @@ const PredictionPage: React.FC = () => {
 
         const data = response.data;
 
+        // Get the current month and year
+        const currentDate = new Date();
+        const currentMonthYear = currentDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+
         // Format the dates as "MMM YYYY" (e.g., "Jan 2024")
         const labels = data.map((d: any) =>
           new Date(d.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
         );
 
-        const forecasts = data.map((d: any) => d.forecast);  // Get forecasted values for y-axis
-        const lowerBounds = data.map((d: any) => d['lower spi'] || 0);   // Fallback to 0 if undefined
-        const upperBounds = data.map((d: any) => d['upper spi'] || 0);   // Fallback to 0 if undefined
+        // Filter the data to show only predictions from the current month onwards
+        const filteredData = data.filter((d: any) =>
+          new Date(d.date) >= currentDate
+        );
 
-        setLabels(labels);
+        const filteredLabels = filteredData.map((d: any) =>
+          new Date(d.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short' })
+        );
+
+        const forecasts = filteredData.map((d: any) => d.forecast);  // Get forecasted values for y-axis
+        const lowerBounds = filteredData.map((d: any) => d['lower spi'] || 0);   // Fallback to 0 if undefined
+        const upperBounds = filteredData.map((d: any) => d['upper spi'] || 0);   // Fallback to 0 if undefined
+
+        setLabels(filteredLabels);
         setForecastData(forecasts);
         setLowerBound(lowerBounds);
         setUpperBound(upperBounds);
@@ -78,11 +92,37 @@ const PredictionPage: React.FC = () => {
     ],
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: 'SPI', // Label for the y-axis
+          font:{
+            weight: 'bold',
+            size: 16,
+          }
+        },
+      },
+    },
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">Monthly Predictions</h1>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false }} />
+      <h1 className="text-3xl font-bold mb-4">Monthly Predictions</h1>
+      {/* Flexbox layout to display chart on the left and SPI table on the right */}
+      <div className="flex flex-col md:flex-row">
+        {/* Chart Section */}
+        <div className="flex-1 bg-white p-6 rounded-lg shadow-md">
+          <Line data={chartData} options={chartOptions} />
+        </div>
+
+        {/* SPI Table Section */}
+        <div className="md:ml-4 mt-8 md:mt-0 flex-shrink-0 md:w-1/3">
+          <SPITable /> {/* Insert SPI to Drought relationship table here */}
+        </div>
       </div>
     </div>
   );
