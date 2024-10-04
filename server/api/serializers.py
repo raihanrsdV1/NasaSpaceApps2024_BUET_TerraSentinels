@@ -4,8 +4,6 @@ from django.utils.timesince import timesince
 from django.utils import timezone
 
 
-
-
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     phone_no = serializers.CharField(required=True)
@@ -14,11 +12,13 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email', 'password', 'phone_no', 'location_lat', 'location_lon', 'username']
+        fields = ['first_name', 'last_name', 'password',
+                  'phone_no', 'location_lat', 'location_lon']
 
-    def validate_email(self, value):
-        if User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("A user with this email already exists.")
+    def validate_phone_no(self, value):
+        if User.objects.filter(phone_no=value).exists():
+            raise serializers.ValidationError(
+                "A user with this phone_no already exists.")
         return value
 
     def create(self, validated_data):
@@ -29,30 +29,32 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
-
 class PostSerializer(serializers.ModelSerializer):
-    tags = serializers.PrimaryKeyRelatedField(queryset=Tag.objects.all(), many=True)  # Use tag IDs for writing
-    tag_names = serializers.SerializerMethodField(read_only=True)  # Use tag names for reading
-    upvotes_count = serializers.SerializerMethodField()  # Count of upvotes
-    downvotes_count = serializers.SerializerMethodField()  # Count of downvotes
-    user_info = UserRegistrationSerializer(source='user')  # Include user information
+    tags = serializers.PrimaryKeyRelatedField(
+        queryset=Tag.objects.all(), many=True)
+    tag_names = serializers.SerializerMethodField(
+        read_only=True)
+    upvotes_count = serializers.SerializerMethodField()
+    downvotes_count = serializers.SerializerMethodField()
+    user_info = UserRegistrationSerializer(
+        source='user')
 
     class Meta:
         model = Post
-        fields = ['id', 'user', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names', 'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']  # Include user_info
+        fields = ['id', 'user', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names',
+                  'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']
 
     def get_tag_names(self, obj):
-        return [tag.name for tag in obj.tags.all()]  # Return tag names
+        return [tag.name for tag in obj.tags.all()]
 
     def get_upvotes_count(self, obj):
-        return obj.ratings.filter(upvote=True).count()  # Count upvotes
+        return obj.ratings.filter(upvote=True).count()
 
     def get_downvotes_count(self, obj):
-        return obj.ratings.filter(upvote=False).count()  # Count downvotes
-    
-    def get_images(self, obj):
-        return [image.image.url for image in obj.images.all()]  # Return image URLs
+        return obj.ratings.filter(upvote=False).count()
 
+    def get_images(self, obj):
+        return [image.image.url for image in obj.images.all()]
 
 
 # Comment Serializer
@@ -61,21 +63,18 @@ class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
-        fields = ['id', 'content', 'post', 'user', 'created_at', 'ratings', 'parent_comment']
+        fields = ['id', 'content', 'post', 'user',
+                  'created_at', 'ratings', 'parent_comment']
 
     def get_ratings(self, obj):
-        ratings = obj.ratings.all()  # Access the 'ratings' related_name from CommentRating
-        return CommentRatingSerializer(ratings, many=True).data  # Serialize the ratings
+        ratings = obj.ratings.all()
+        return CommentRatingSerializer(ratings, many=True).data
 
 
-# Alert Serializer
 class AlertSerializer(serializers.ModelSerializer):
     class Meta:
         model = Alert
         fields = '__all__'
-
-
-
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -84,11 +83,10 @@ class TagSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class CommentRatingSerializer(serializers.ModelSerializer):
     class Meta:
         model = CommentRating
-        fields = ['id', 'user', 'value']  # Fields to include in the response
+        fields = ['id', 'user', 'value']
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -97,19 +95,19 @@ class RatingSerializer(serializers.ModelSerializer):
         fields = ['user', 'post', 'upvote', 'rated_at']
 
 
-
-
 class SymptomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Symptom
         fields = '__all__'
 
+
 class DiseaseStatisticsSerializer(serializers.ModelSerializer):
     symptoms = SymptomSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = DiseaseStatistics
         fields = '__all__'
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -121,69 +119,74 @@ class NotificationSerializer(serializers.ModelSerializer):
 class TopicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Topic
-        fields = ['id', 'name', 'description', 'created_at', 'user']  # Include fields you want to expose
+        fields = ['id', 'name', 'description', 'created_at',
+                  'user']
 
     def create(self, validated_data):
         return Topic.objects.create(**validated_data)
 
 
-# Option Serializer
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
-        fields = ['id', 'text']  # Include fields you want to expose
+        fields = ['id', 'text']
 
     def create(self, validated_data):
         return Option.objects.create(**validated_data)
 
-# Quiz Serializer
+
 class QuizSerializer(serializers.ModelSerializer):
-    options = OptionSerializer(many=True)  # Add this line to include options
+    options = OptionSerializer(many=True)
 
     class Meta:
         model = Quiz
-        fields = ['id', 'topic', 'question', 'correct_answer', 'options', 'explanation']  # Include options in fields
+        fields = ['id', 'topic', 'question', 'correct_answer',
+                  'options', 'explanation']
 
     def create(self, validated_data):
-        options_data = validated_data.pop('options', [])  # Extract options from the data
-        quiz = Quiz.objects.create(**validated_data)  # Create the quiz instance
-        for option_data in options_data:  # Create options
-            Option.objects.create(quiz=quiz, **option_data)  # Associate options with the quiz
+        options_data = validated_data.pop('options', [])
+        quiz = Quiz.objects.create(**validated_data)
+        for option_data in options_data:
+            Option.objects.create(quiz=quiz, **option_data)
         return quiz
 
     def update(self, instance, validated_data):
-        options_data = validated_data.pop('options', None)  # Extract options if provided
+        options_data = validated_data.pop(
+            'options', None)
         instance.topic = validated_data.get('topic', instance.topic)
         instance.question = validated_data.get('question', instance.question)
-        instance.correct_answer = validated_data.get('correct_answer', instance.correct_answer)
+        instance.correct_answer = validated_data.get(
+            'correct_answer', instance.correct_answer)
         instance.save()
 
         if options_data is not None:
-            # Clear existing options and add new ones
-            instance.options.all().delete()  # Delete current options
+            instance.options.all().delete()
             for option_data in options_data:
-                Option.objects.create(quiz=instance, **option_data)  # Create new options
-        
+                Option.objects.create(quiz=instance, **option_data)
+
         return instance
 
 
-
 class QuizSolveSerializer(serializers.ModelSerializer):
-    time_interval = serializers.SerializerMethodField()  # Add field for time interval
-    num_attempts = serializers.SerializerMethodField()  # Add field for number of attempts
-    user_info = UserRegistrationSerializer(source='user', read_only=True)  # Include user information, but make sure it's read-only
+    time_interval = serializers.SerializerMethodField()
+    num_attempts = serializers.SerializerMethodField()
+    user_info = UserRegistrationSerializer(source='user', read_only=True)
 
     class Meta:
         model = QuizSolve
-        fields = ['id','user', 'user_info', 'quiz', 'chosen_option', 'quiz_taking_start', 'quiz_time_end', 'time_interval', 'num_attempts']  # Include new fields
+        fields = ['id', 'user', 'user_info', 'quiz', 'chosen_option', 'quiz_taking_start',
+                  'quiz_time_end', 'time_interval', 'num_attempts']
 
     def get_time_interval(self, obj):
         # Convert both times to timezone-aware if they are not already
         if obj.quiz_taking_start and obj.quiz_time_end:
-            quiz_taking_start = timezone.make_aware(obj.quiz_taking_start) if timezone.is_naive(obj.quiz_taking_start) else obj.quiz_taking_start
-            quiz_time_end = timezone.make_aware(obj.quiz_time_end) if timezone.is_naive(obj.quiz_time_end) else obj.quiz_time_end
+            quiz_taking_start = timezone.make_aware(obj.quiz_taking_start) if timezone.is_naive(
+                obj.quiz_taking_start) else obj.quiz_taking_start
+            quiz_time_end = timezone.make_aware(obj.quiz_time_end) if timezone.is_naive(
+                obj.quiz_time_end) else obj.quiz_time_end
 
-            return timesince(quiz_taking_start, quiz_time_end)  # Return a human-readable time interval
+            # Return a human-readable time interval
+            return timesince(quiz_taking_start, quiz_time_end)
         return None
 
     def get_num_attempts(self, obj):
@@ -194,13 +197,11 @@ class QuizSolveSerializer(serializers.ModelSerializer):
         return QuizSolve.objects.create(**validated_data)
 
 
-# Blog Serializer
 class BlogSerializer(serializers.ModelSerializer):
     class Meta:
         model = Blog
-        fields = ['id', 'topic', 'title', 'content', 'created_at', 'user']  # Include fields you want to expose
+        fields = ['id', 'topic', 'title', 'content', 'created_at',
+                  'user']  # Include fields you want to expose
 
     def create(self, validated_data):
         return Blog.objects.create(**validated_data)
-
-
