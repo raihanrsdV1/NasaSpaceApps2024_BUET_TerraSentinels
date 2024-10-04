@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Alert } from '../../types/types';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Alert } from "../../types/types";
 
 const Alerts: React.FC = () => {
   const [alerts, setAlerts] = useState<Alert[]>([]);
@@ -10,11 +10,11 @@ const Alerts: React.FC = () => {
   useEffect(() => {
     const fetchAlerts = async () => {
       try {
-        const response = await axios.get<Alert[]>('/alert/all/');
+        const response = await axios.get<Alert[]>("/alert/all/");
         setAlerts(response.data);
         setLoading(false);
       } catch (error) {
-        setError('Failed to fetch alerts');
+        setError("Failed to fetch alerts");
         setLoading(false);
       }
     };
@@ -32,21 +32,27 @@ const Alerts: React.FC = () => {
 
   return (
     <div>
-      <h2>Past Alerts</h2>
+      <h2 className="text-xl font-bold mb-4">Past Alerts</h2>
       {alerts.length > 0 ? (
         <ul>
-          {alerts.map(alert => (
-            <li key={alert.id}>
-              <h3>{alert.post.title}</h3>
-              <p>{alert.post.content}</p>
-              <p>Alert Type: {alert.alert_type}</p>
-              <p>Location: Lat {alert.alert_location_lat}, Lon {alert.alert_location_lon}</p>
-              <p>Region: {alert.alert_region}</p>
+          {alerts.map((alert) => (
+            <li
+              key={alert.id}
+              className="bg-gray-100 p-4 rounded-lg shadow-md mb-4"
+            >
+              <h3 className="text-lg font-semibold">{alert.post.title}</h3>
+              <p className="text-gray-700">{alert.post.content}</p>
+              <p className="text-gray-600">Alert Type: {alert.alert_type}</p>
+              <p className="text-gray-600">
+                Location: Lat {alert.alert_location_lat}, Lon{" "}
+                {alert.alert_location_lon}
+              </p>
+              <p className="text-gray-600">Region: {alert.alert_region}</p>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No alerts found.</p>
+        <p className="text-gray-500">No alerts found.</p>
       )}
     </div>
   );

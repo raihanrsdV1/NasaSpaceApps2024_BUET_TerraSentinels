@@ -59,9 +59,18 @@ export interface Post {
   content: string;
   created_at: string;
   tag_names: string[];
-  upvotes: number;
-  downvotes: number;
-  comments: Comment[]; // Array of comments
+  upvotes_count: number;
+  downvotes_count: number;
+  user_info: {
+    first_name: string;
+    last_name: string;
+    phone_no: number;
+    location_lat: number;
+    location_lon: number;
+  };
+  is_question: boolean;
+  is_answered: boolean;
+  images: File[];
 }
 
 export interface Tag {

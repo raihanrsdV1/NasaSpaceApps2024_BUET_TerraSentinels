@@ -53,6 +53,24 @@ def create_blog(request):
         return Response({"message": "Blog created successfully.", "blog": serializer.data}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+@api_view(['POST'])
+def create_blogs(request):
+    blogs_data = request.data  # Expecting a list of blog data
+    if isinstance(blogs_data, list):
+        created_blogs = []
+        for blog_data in blogs_data:
+            blog_data['user'] = 1  # Set user_id to 1 for all blogs
+            serializer = BlogSerializer(data=blog_data)
+            if serializer.is_valid():
+                blog = serializer.save()
+                created_blogs.append(serializer.data)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"message": "Blogs created successfully.", "blogs": created_blogs}, status=status.HTTP_201_CREATED)
+    return Response({"error": "Invalid data format. Expected a list."}, status=status.HTTP_400_BAD_REQUEST)
+
 # Edit a Blog
 @api_view(['PUT'])
 def edit_blog(request, pk):
@@ -174,7 +192,8 @@ def start_quiz(request):
         'user': user_id,  # Pass the user ID directly
         'quiz': quiz_id,  # Pass the quiz ID directly
     }
-
+    print("calls this")
+    print(quiz_solve_data)
     # Serialize the data and save the instance
     serializer = QuizSolveSerializer(data=quiz_solve_data)
 

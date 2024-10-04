@@ -12,6 +12,8 @@ from .views.weather_data import *
 from .views.quiz import *
 from .views.water_resource_data import get_water_data
 from .views.dashboard import get_weather_summary
+from .views.dashboard import get_weather_forecast
+from .views.task_manager import *
 
 from .views.gee_endpoint import *
 
@@ -28,7 +30,9 @@ urlpatterns = [
     path("water-data/", get_water_data),
 
     #weather-forecast from open weather api ##Ifti
-    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_summary),
+    path('weather-summary/<str:lat>/<str:lon>/', get_weather_summary, name='get_weather_summary'),
+    path('weather-forecast/<str:lat>/<str:lon>/', get_weather_forecast, name='get_weather_summary'),
+
     
     # weather data
     path("weather-data/<str:parameter>/<str:start>/<str:end>/<str:long>/<str:lat>/", get_weather_data),
@@ -45,6 +49,7 @@ urlpatterns = [
     path('comment_ratings/add/', add_comment_rating, name='add_comment_rating'),
     path('comment_ratings/undo/', undo_comment_rating, name='undo_comment_rating'),
     path('comment_ratings/delete/<int:id>/', delete_comment_rating, name='delete_comment_rating'),
+    path('posts/<int:post_id>/mark_as_answered/', mark_as_answered, name='mark_as_answered'),
 
     # Post URLs
     path('post/delete/<int:post_id>/', delete_post, name='delete_post'),
@@ -92,6 +97,7 @@ urlpatterns = [
     
     # Blog URLs
     path('blogs/', create_blog, name='create_blog'),  # Create Blog
+    path('blogs/lot/', create_blogs, name='create_blogs'),
     path('blogs/<int:pk>/', edit_blog, name='edit_blog'),  # Edit Blog
     path('blogs/<int:pk>/delete/', delete_blog, name='delete_blog'),  # Delete Blog
 
@@ -116,8 +122,12 @@ urlpatterns = [
     
     path('gee-data/', getGEEData, name='get_gee_data'),
     path('heatmap/', get_heatmap, name='get_heatmap'),
-    
-    # Prediction URLs
+
+    #task manager
+    path('tasks/create/', create_task, name='create_task'),
+    path('tasks/delete/<int:task_id>/', delete_task, name='delete_task'),
+    path('tasks/user/<int:user_id>/', get_user_tasks, name='get_user_tasks'),
     path('predict/',predict, name='predict'),
+
     # Add other URLs here...
 ]

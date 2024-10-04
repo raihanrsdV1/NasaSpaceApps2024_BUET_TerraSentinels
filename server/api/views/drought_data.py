@@ -17,6 +17,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from sklearn.metrics import mean_squared_error
 import joblib
 from sklearn.model_selection import ParameterSampler
+import re # add re to requirements.txt
 # import itertools
 
 NASA_POWER = "https://power.larc.nasa.gov/api/temporal/monthly/point?"
@@ -67,6 +68,13 @@ class POWER_API:
         df = pd.DataFrame.from_dict(records)
 
         return df
+    
+    def get_year(self):
+      response = requests.get(self.request)
+      data_json = response.json()
+      message = data_json['messages'][0]
+      year_match = re.search(r'\d{4}', message)
+      return year_match.group(0) if year_match else None
 
 # Define the calculate_spi function
 def calculate_spi(precip, scale=1):
@@ -110,7 +118,11 @@ def calculate_spi(precip, scale=1):
 def get_drought_data(latitude, longitude, start_year, end_year):
     latitude= float(latitude)
     longitude= float(longitude)
-    nasa_weather = POWER_API(start=start_year, end=end_year, long=longitude, lat=latitude)
+    # Changed data
+    dummy_weather = POWER_API(start=start_year, end=pd.Timestamp.now().year+1, long=longitude, lat=latitude) # To be sure that this data is not available
+    available_end_year = dummy_weather.get_year()
+    # end
+    nasa_weather = POWER_API(start=start_year, end=available_end_year, long=longitude, lat=latitude)
     df = nasa_weather.get_weather()
 
     # naming date column and setting index
@@ -241,8 +253,10 @@ def predict(request):
     location = request.data.get('location') # location is a dictionary with 'latitude' and 'longitude' keys
     latitude = location['latitude']
     longitude = location['longitude']
-    start_year = request.data.get('start_year')
-    end_year = request.data.get('end_year')
+    # start_year = request.data.get('start_year')
+    start_year = 1993
+    # end_year = request.data.get('end_year')
+    end_year = POWER_API(start=1993, end=pd.Timestamp.now().year+1, long=longitude, lat=latitude).get_year()
 
     # Get the base directory, which is "server"
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -267,7 +281,7 @@ def predict(request):
     # Add 6 months to the current date
     new_date = current_date + pd.DateOffset(months=6)
 
-    steps=(new_date.year-end_year)*12 + new_date.month-12
+    steps = (new_date.year - int(end_year)) * 12 + new_date.month - 12
 
     # Get the exog data
     features = ['PS','T2M','QV2M','RH2M','WS10M','PRECTOTCORR','GWETTOP']

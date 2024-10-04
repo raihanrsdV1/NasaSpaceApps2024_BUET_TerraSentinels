@@ -1,28 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Weather from './Weather';
-// import CropProduction from './CropProduction';
-import Alerts from './Alerts';
-import './stylesheet.css'
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
-import TaskManager from './TaskManager';
+import WeatherForecast from './WeatherForecast';
+import WeatherSummary from './WeatherSummary';
+
+
 
 const DBoard = () => {
+    const [latitude, setLatitude] = useState<number>(23.2);
+    const [longitude, setLongitude] = useState<number>(-88.5);
+
     return (
         <div className='flex'>
             <Sidebar />
             <Navbar />
-            <div className="dashboard">
+            <div className="dashboard mt-20">
                 <div className="main-content">
-                    <div className="top-row">
+                    <div className="top-row full-width"> 
                         <Weather />
-                        <TaskManager />
-                        <Alerts />
                     </div>
-                    <div className="middle-row"></div>
-                    <div className="bottom-row">
-                        
+                    <div className="middle-row flex justify-between mt-10 w-full h-[80%]">
+                        <div className="w-[48%] flex flex-col align-start items-start">
+                            <WeatherSummary 
+                                latitude={latitude} 
+                                longitude={longitude} 
+                                setLatitude={setLatitude} 
+                                setLongitude={setLongitude} 
+                            />
+                        </div>
+                        <div className="w-[48%] flex flex-col align-start items-start">
+                            <WeatherForecast 
+                                latitude={latitude} 
+                                longitude={longitude} 
+                                setLatitude={setLatitude} 
+                                setLongitude={setLongitude} 
+                            />
+                        </div>
                     </div>
+                    <div className="bottom-row"></div>
                 </div>
             </div>
         </div>

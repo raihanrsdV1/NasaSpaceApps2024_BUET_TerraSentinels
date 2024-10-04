@@ -24,10 +24,12 @@ PROJECT = os.getenv("PROJECT")
 
 # Authenticate to the Earth Engine servers
 try:
+
     ee.Initialize(project=PROJECT)
 except Exception as e:
     ee.Authenticate()
     ee.Initialize(project=PROJECT)
+
 
 def get_evapotranspiration_series(lat, lon, start, end):
     # Load the MODIS evapotranspiration dataset
