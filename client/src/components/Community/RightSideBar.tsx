@@ -37,7 +37,7 @@ const RightSidebar = () => {
     "New feature: Post sharing feature added",
   ]);
 
-  const handlePostCreated = async (postData: { user: number; title: string; content: string; tags: number[] }) => {
+  const handlePostCreated = async (postData: { user: number; title: string; content: string; tags: number[], is_question: boolean }) => {
     try {
         // Call the API to create a post
         const response = await axios.post("/post/", postData);
@@ -48,6 +48,7 @@ const RightSidebar = () => {
         // Optionally, handle error (e.g., show a notification to the user)
     } finally {
         handleCloseModal(); // Close the modal after the post is created
+        window.location.reload(); // Reload the page to show the new post
     }
   };
 
@@ -63,7 +64,7 @@ const RightSidebar = () => {
       {/* Notifications Section */}
       <div className="mb-4 flex flex-col w-full">
         <h2 className="font-bold text-lg text-center mb-2">Notifications</h2>
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '250px' }}>
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '230px' }}>
           {notifications.length === 0 ? (
             <p>No new notifications.</p>
           ) : (
@@ -79,7 +80,7 @@ const RightSidebar = () => {
       {/* Alerts Section */}
       <div className="flex flex-col w-full">
         <h2 className="font-bold text-lg text-center mb-2">Alerts</h2>
-        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '250px' }}>
+        <div className="flex-1 overflow-y-auto" style={{ maxHeight: '230px' }}>
           {alerts.length === 0 ? (
             <p>No alerts at the moment.</p>
           ) : (

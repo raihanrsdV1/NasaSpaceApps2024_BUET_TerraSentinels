@@ -112,6 +112,7 @@ urlpatterns = [
     path('notifications/<int:user_id>/', get_user_notifications, name='user-notifications'),
     path('notifications/add/', add_notification, name='add-notification'),
     path('blogs/topic/<int:topic_id>/', get_blogs_by_topic, name='get_blogs_by_topic'),
+    path('posts/<int:post_id>/mark_as_answered/', mark_as_answered, name='mark_as_answered'),
     
     
     path('gee-data/', getGEEData, name='get_gee_data'),

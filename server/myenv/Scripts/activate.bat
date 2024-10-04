@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=D:\NASA\NasaSpaceApps2024_BUET_TerraSentinels\server\myenv
+set VIRTUAL_ENV=D:\NewNASA\NasaSpaceApps2024_BUET_TerraSentinels\server\myenv
 
 if not defined PROMPT set PROMPT=$P$G
 

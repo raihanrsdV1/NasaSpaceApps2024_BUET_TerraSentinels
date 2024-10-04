@@ -656,3 +656,18 @@ def add_notification(request):
 
     except Exception as e:
         return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+    
+@api_view(['PATCH'])
+def mark_as_answered(request, post_id):
+    try:
+        post = Post.objects.get(id=post_id)
+    except Post.DoesNotExist:
+        return Response({'error': 'Post not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    # Update the is_answered field to True
+    post.is_answered = True
+    post.save()
+
+    # Return the updated post using the existing PostSerializer
+    serializer = PostSerializer(post)
+    return Response(serializer.data, status=status.HTTP_200_OK)

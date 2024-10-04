@@ -5,7 +5,7 @@ import { Tag } from "../../types/types";
 interface CreatePostModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onPostCreated: (postData: { user: number; title: string; content: string; tags: number[] }) => void;
+  onPostCreated: (postData: { user: number; title: string; content: string; tags: number[], is_question: boolean }) => void;
 }
 
 const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPostCreated }) => {
@@ -13,6 +13,8 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [is_question, setIsQuestion] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
     const fetchTags = async () => {
@@ -43,6 +45,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
       title,
       content,
       tags: selectedTags,
+      is_question,
     };
 
     onPostCreated(postData);
@@ -90,6 +93,22 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({ isOpen, onClose, onPo
                   </button>
                 ))}
               </div>
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Images</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => setImage(e.target.files?.[0] || null)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block mb-1">Is it a question?</label>
+              <input
+                type="checkbox"
+                checked={is_question}
+                onChange={(e) => setIsQuestion(e.target.checked)}
+              />
             </div>
             <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
               Create Post

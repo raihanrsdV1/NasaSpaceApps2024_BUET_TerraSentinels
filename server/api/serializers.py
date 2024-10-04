@@ -31,30 +31,50 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True)
-    tag_names = serializers.SerializerMethodField(
-        read_only=True)
+        queryset=Tag.objects.all(), many=True
+    )
+    tag_names = serializers.SerializerMethodField(read_only=True)
     upvotes_count = serializers.SerializerMethodField()
     downvotes_count = serializers.SerializerMethodField()
-    user_info = UserRegistrationSerializer(
-        source='user')
+    user_info = UserRegistrationSerializer(source='user', read_only=True)
+    alert_info = serializers.SerializerMethodField()  # Custom method for alert information
+    images = serializers.SerializerMethodField()
 
     class Meta:
         model = Post
-        fields = ['id', 'user', 'user_info', 'title', 'content', 'created_at', 'tags', 'tag_names',
-                  'is_question', 'is_answered', 'upvotes_count', 'downvotes_count', 'images']
+        fields = [
+            'id', 'user', 'user_info', 'title', 'content', 'created_at',
+            'tags', 'tag_names', 'is_question', 'is_answered', 
+            'upvotes_count', 'downvotes_count', 'images', 'alert_info'
+        ]
 
+    # Custom method to return tag names
     def get_tag_names(self, obj):
         return [tag.name for tag in obj.tags.all()]
 
+    # Custom method to count upvotes
     def get_upvotes_count(self, obj):
         return obj.ratings.filter(upvote=True).count()
 
+    # Custom method to count downvotes
     def get_downvotes_count(self, obj):
         return obj.ratings.filter(upvote=False).count()
 
+    # Custom method to return image URLs
     def get_images(self, obj):
         return [image.image.url for image in obj.images.all()]
+
+    # Custom method to get alert information
+    def get_alert_info(self, obj):
+        if hasattr(obj, 'alert') and obj.alert is not None:
+            return {
+                'id': obj.alert.id,
+                'message': obj.alert.message,
+                'severity': obj.alert.severity,
+                'created_at': obj.alert.created_at,
+                # Add any other alert fields needed
+            }
+        return None
 
 
 # Comment Serializer

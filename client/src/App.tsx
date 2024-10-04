@@ -61,9 +61,9 @@ const App: React.FC = () => {
           <Route path="/extremities" element={<DroughtPrediction />} />
     //     </Routes>
     //   </Router>
-    // </Fragment */} /**/
+    // </Fragment */} 
 
-    // </div>
+    </div>
 
   );
 };
