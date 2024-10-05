@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "../../utils/AxiosSetup";
 import Sidebar from "../Sidebar";
 import Navbar from "../Navbar";
@@ -13,6 +13,8 @@ import dayjs from "dayjs";
 
 import brand_logo from "./brand.png";
 import { Link } from "react-router-dom";
+
+import AuthContext from "../../context/AuthContext";
 
 // We will fetch from nasapower api and gee api
 
@@ -86,8 +88,12 @@ const parameterStyles: Record<ParameterType, { color: string; unit: string }> =
   };
 
 const DataAnalysis: React.FC<WeatherDataProps> = () => {
-  const [latitude, setLatitude] = useState<number>(37.7749);
-  const [longitude, setLongitude] = useState<number>(-122.4194);
+  const contextData = useContext(AuthContext);
+  const user_lat = contextData?.user.location_lat || 23.8; 
+  const user_lon = contextData?.user.location_lon || 90.5; 
+
+  const [latitude, setLatitude] = useState<number>(user_lat);
+  const [longitude, setLongitude] = useState<number>(user_lon);
   const [startDate, setStartDate] = useState<Date | null>(
     new Date("2021-01-01")
   );

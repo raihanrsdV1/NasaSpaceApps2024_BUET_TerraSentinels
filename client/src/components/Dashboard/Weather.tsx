@@ -1,15 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import axios from "../../utils/AxiosSetup";
 import tempertureIcon from "./icons/thermometer.png";
 import windIcon from "./icons/wind_icon.png";
 import waterIcon from "./icons/water_icon.png";
 import pptIcon from "./icons/ppt_icon.png";
 import "./Weather.css"; // Importing the separated CSS file
-
+import AuthContext from "../../context/AuthContext";
 const Weather = () => {
+
+  const contextData = useContext(AuthContext);
+  const user_lat = contextData?.user.location_lat || 23.8;
+  const user_lon = contextData?.user.location_lon || 90.5;
+
+
   const [weatherData, setWeatherData] = useState(null);
-  const [latitude, setLatitude] = useState<number>(23.2);
-  const [longitude, setLongitude] = useState<number>(-88.5);
+  const [latitude, setLatitude] = useState<number>(user_lat);
+  const [longitude, setLongitude] = useState<number>(user_lon);
 
   const [temperature, setTemperature] = useState<number>(0);
   const [feelsLike, setFeelsLike] = useState<number>(0);
