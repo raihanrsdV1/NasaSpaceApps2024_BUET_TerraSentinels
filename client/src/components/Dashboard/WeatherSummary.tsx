@@ -87,7 +87,7 @@ const WeatherSummary: React.FC<WeatherSummaryProps> = ({ latitude, longitude, se
             borderRadius: "10px", // Rounded corners
             boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)", // Soft shadow for depth
             border: "1px solid #ddd", // Light border for structure
-            height: "650px",
+            height: "575px",
             overflowY: "scroll"
         }}
     >
@@ -128,7 +128,7 @@ const WeatherSummary: React.FC<WeatherSummaryProps> = ({ latitude, longitude, se
             </div>
         </div>
     
-        <table className="min-w-full divide-y divide-gray-200" style={{ borderCollapse: "collapse", width: "100%" }}>
+        <table className="min-w-full mt-8 divide-y divide-gray-200" style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
                 <tr className="bg-green-200" style={{ backgroundColor: "#d1f7c4" }}>
                     <th className="px-4 py-2 text-center text-green-700" style={{ padding: "10px", color: "#2d6a4f", fontWeight: "bold" }}>Date</th>

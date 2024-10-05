@@ -65,14 +65,17 @@ const RightSidebar = () => {
     <div className="flex flex-col h-full">
       <button
         onClick={handleCreatePost}
-        className="mb-4 py-2 px-4 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="mb-4 py-2 px-4 bg-blue-600 text-white font-bold rounded hover:bg-blue-700"
       >
         Create Post
       </button>
+      <button className="mb-4 py-2 px-4 text-white font-bold bg-blue-600 rounded hover:bg-blue-700">
+        Export Alerts
+      </button>
 
-      <button className="mb-4 py-2 px-4 text-white bg-red-500 rounded hover:bg-red-600">Create Alert</button>
-
-      <button className="mb-4 py-2 px-4 text-white bg-red-500 rounded hover:bg-red-600">Export Alerts</button>
+      <button className="mb-4 py-2 px-4 text-white font-bold bg-red-500 rounded hover:bg-red-600">
+        Create Alert
+      </button>
 
       {/* Notifications Section */}
       <div className="mb-4 flex flex-col w-full">
