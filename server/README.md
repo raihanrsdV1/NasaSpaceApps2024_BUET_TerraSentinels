@@ -1,8 +1,6 @@
 # Hi there! 👋
 
-### This is a readymade api with authentication implemented. This api is built using Django Rest framework and simple JWT. I made it for my personal use for future projects. Feel free to use it.
-
-#### Hope you find things easy to understand here. If you have any doubts, feel free to contact [me.](https://github.com/mehedikhan72)
+#### Welcome to the server side of this project!
 
 ## How to gear up the server.
 
@@ -15,17 +13,11 @@
 
 ## Admin access
 
-1. Open the server in your browser, using the url in your terminal(where the server is running). Or directly go to the url
-   'http://127.0.0.1:8000/'.
-2. Add 'admin/' at the end of the url. Or visit 'http://127.0.0.1:8000/admin/'.
+1. Create a super user using the command: `python manage.py createsuperuser`
+2. Fill in the details as prompted.
+3. Go to the admin panel by going to the url: `http://127.0.0.1:8000/admin/`
 
-### Admin credentials
-
-#### email: 'tef@gmail.com'
-
-#### password: 'tef'
-
-#### Disclaimer 1: This authentication system uses email instead of username(which is the default one in django). So, you'll have to use the email to login and register, as email seems to be a more standard way of authentication.
+#### Disclaimer 1: This authentication system uses phone number instead of username(which is the default one in django). So, you'll have to use a phone number to login and register.
 
 #### Disclaimer 2: Make sure to migrate the database before running the server. Use the following commands.
 

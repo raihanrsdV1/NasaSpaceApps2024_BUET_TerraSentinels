@@ -125,7 +125,7 @@ class DiseaseStatistics(models.Model):
     region = models.CharField(max_length=255)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    reported_at = models.DateTimeField(auto_now_add=True)
+    reported_at = models.DateTimeField()
     symptoms = models.ManyToManyField(Symptom)
 
 

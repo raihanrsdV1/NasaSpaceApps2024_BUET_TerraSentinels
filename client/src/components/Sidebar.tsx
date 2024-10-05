@@ -62,6 +62,13 @@ const Sidebar = () => {
           </li>
           <li
             className="flex justify-left items-center font-bold m-2 p-3 text-white cursor-pointer transform transition-all duration-300 hover:translate-x-2 hover:text-yellow-400 hover:font-bold"
+            onClick={() => navigate("/disease")}
+          >
+            <i className="bx bxs-virus pr-3 text-xl"></i>
+            <p>Diseases</p>
+          </li>
+          <li
+            className="flex justify-left items-center font-bold m-2 p-3 text-white cursor-pointer transform transition-all duration-300 hover:translate-x-2 hover:text-yellow-400 hover:font-bold"
             onClick={() => navigate("/quiz")}
           >
             <i className="bx bxs-book-reader pr-3 text-xl"></i>

@@ -7,6 +7,7 @@ from ..serializers import *
 from .community_helper import *
 from django.utils import timezone
 from django.shortcuts import get_object_or_404
+import datetime
 
 
 @api_view(['POST'])
@@ -672,3 +673,44 @@ def mark_as_answered(request, post_id):
     # Return the updated post using the existing PostSerializer
     serializer = PostSerializer(post)
     return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+from django.db.models import Count
+
+
+@api_view(['GET'])
+def disease_occurrence(request):
+    # Count occurrences of each disease
+    disease_counts = DiseaseStatistics.objects.values('disease').annotate(count=Count('disease')).order_by('disease')
+    
+    # Prepare the response data
+    data = {
+        'diseases': [item['disease'] for item in disease_counts],
+        'counts': [item['count'] for item in disease_counts]
+    }
+    
+    return Response(data)
+
+
+from django.db.models.functions import TruncMonth
+
+
+@api_view(['GET'])
+def blight_time_series(request):
+    # Filter data for "Blight" disease and group by month
+    blight_data = (
+        DiseaseStatistics.objects.filter(disease="Blight")
+        .annotate(month=TruncMonth('reported_at'))  # Group by month
+        .values('month')  # Extract month from the date
+        .annotate(count=Count('id'))  # Count occurrences in each month
+        .order_by('month')  # Order by month
+    )
+    
+    # Prepare the response data
+    data = {
+        'months': [item['month'].strftime('%Y-%m') for item in blight_data],  # Convert to Year-Month format
+        'counts': [item['count'] for item in blight_data]
+    }
+
+    return Response(data)
