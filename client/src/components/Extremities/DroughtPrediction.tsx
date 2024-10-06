@@ -136,7 +136,7 @@ const PredictionPage: React.FC = () => {
       <div className="flex flex-grow">
         <Sidebar />
         <div className="container p-8">
-          <h1 className="text-3xl font-bold mb-4">Monthly Predictions</h1>
+          <h1 className="text-3xl font-bold mb-4 mt-20">Monthly Predictions</h1>
           {/* Flexbox layout to display chart on the left and SPI table on the right */}
           <div className="flex flex-col md:flex-row">
             {/* Chart Section */}

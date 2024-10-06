@@ -24,6 +24,7 @@ import { toast, ToastContainer } from "react-toastify";
 import DBoard from "./components/Dashboard/DBoard";
 import DroughtPrediction from "./components/Extremities/DroughtPrediction";
 import DiseaseStatisticsChart from "./components/Data/DiseaseStats";
+import AlertPost from "./components/Community/AlertPost";
 
 const App: React.FC = () => {
   const { pathname } = useLocation();
@@ -45,6 +46,7 @@ const App: React.FC = () => {
           <Route path="/extremities" element={<DroughtPrediction />} />
           <Route path="/hello" element={<HelloFromServer />} />
           <Route path="/disease" element={<DiseaseStatisticsChart />} />
+          <Route path="/alert" element={<AlertPost />} />
         </Routes>
       </div>
 
