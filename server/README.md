@@ -28,3 +28,4 @@
 ## API documentaion
 
 If you're running the server locally, in localhost port 8000, go to this [api documentation](http://127.0.0.1:8000/swagger/) for a detailed documentation of the api endpoints. (Make sure the server is running, as this api documentation is not live, yet.)
+

@@ -241,3 +241,14 @@ class Pest(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class PestStatistics(models.Model):
+    pest = models.ForeignKey(Pest, on_delete=models.CASCADE)
+    region = models.CharField(max_length=100)
+    latitude = models.FloatField()
+    longitude = models.FloatField()
+    reported_at = models.DateTimeField()  # Remove auto_now_add
+
+    def __str__(self):
+        return f"{self.pest.name} in {self.region} at {self.reported_at}"

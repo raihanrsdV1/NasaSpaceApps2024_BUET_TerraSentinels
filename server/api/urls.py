@@ -17,6 +17,7 @@ from .views.task_manager import *
 
 from .views.gee_endpoint import *
 from .views.scripts.disease import *
+from .views.PestStatistics import *
 
 urlpatterns = [
     # auth
@@ -147,8 +148,8 @@ urlpatterns = [
          get_blogs_by_topic, name='get_blogs_by_topic'),
 
 
-    path('gee-data/', getGEEData, name='get_gee_data'),
-    path('heatmap/', get_heatmap, name='get_heatmap'),
+    # path('gee-data/', getGEEData, name='get_gee_data'),
+    # path('heatmap/', get_heatmap, name='get_heatmap'),
 
     # task manager
     path('tasks/create/', create_task, name='create_task'),
@@ -168,4 +169,10 @@ urlpatterns = [
     path('pests/', get_all_pests, name='get_all_pests'),  # GET request to list all pests
     path('pests/create/', create_pest, name='create_pest'),  # POST request to create a new pest
     path('diseases/unique/', get_unique_diseases, name='get_unique_diseases'),
+
+
+    path('generate-pest-statistics/<int:n>/', generate_pest_statistics, name='generate_pest_statistics'),
+    path('unique-pests/', get_unique_pests, name='get_unique_pests'),
+    path('pest-occurrence/', pest_occurrence, name='pest_occurrence'),
+    path('pest-time-series/', pest_time_series, name='pest_time_series'),
 ]

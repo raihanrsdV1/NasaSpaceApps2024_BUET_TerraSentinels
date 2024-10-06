@@ -250,3 +250,9 @@ class PestSerializer(serializers.ModelSerializer):
         return Pest.objects.create(**validated_data)
     
 
+
+
+class PestStatisticsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PestStatistics
+        fields = '__all__'  # Include all fields in the serialization
