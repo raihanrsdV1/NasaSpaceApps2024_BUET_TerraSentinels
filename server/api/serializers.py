@@ -70,9 +70,11 @@ class PostSerializer(serializers.ModelSerializer):
         if hasattr(obj, 'alert') and obj.alert is not None:
             return {
                 'id': obj.alert.id,
-                'message': obj.alert.message,
-                'severity': obj.alert.severity,
-                'created_at': obj.alert.created_at,
+                'alert_type': obj.alert.alert_type,
+                'alert_reason' : obj.alert.alert_reason,
+                'alert_location_lat': obj.alert.alert_location_lat,
+                'alert_location_lon': obj.alert.alert_location_lon,
+                
                 # Add any other alert fields needed
             }
         return None
@@ -235,3 +237,16 @@ class TaskSerializer(serializers.ModelSerializer):
                   'is_completed', 'task_description']
         # 'id' and 'creation_date' should be read-only
         read_only_fields = ['id', 'creation_date']
+
+
+
+
+class PestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pest
+        fields = ['id', 'name', 'gene', 'typical_region']
+
+    def create(self, validated_data):
+        return Pest.objects.create(**validated_data)
+    
+

@@ -363,7 +363,6 @@ def edit_alert(request, alert_id):
     except Alert.DoesNotExist:
         return Response({"error": "Alert not found."}, status=status.HTTP_404_NOT_FOUND)
 
-
 @api_view(['POST'])
 def add_alert(request):
     data = request.data
@@ -371,6 +370,27 @@ def add_alert(request):
 
     if serializer.is_valid():
         alert = serializer.save()
+
+        # Check if the alert type is 'disease'
+        if alert.alert_type == 'disease':
+            # Assuming you have a way to get disease statistics data
+            disease_statistics_data = {
+                'alert': alert,  # Link the disease stats to the alert
+                # Add other required fields for disease statistics here
+                'symptoms': data.get('symptoms', []),  # Assuming symptoms are part of the request
+                # Include other necessary fields that you have in your DiseaseStatistics model
+            }
+
+            # Call the add_disease_statistics function logic directly here
+            disease_stats_serializer = DiseaseStatisticsSerializer(data=disease_statistics_data)
+            if disease_stats_serializer.is_valid():
+                disease_stats = disease_stats_serializer.save()
+                # Optionally add symptoms to the disease statistics if needed
+                for symptom_name in disease_statistics_data['symptoms']:
+                    symptom = Symptom.objects.get(name=symptom_name)
+                    disease_stats.symptoms.add(symptom)
+            else:
+                return Response(disease_stats_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Get users within 50KM radius
         users_nearby = get_users_within_radius(
@@ -382,23 +402,20 @@ def add_alert(request):
         for user in users_nearby:
             Notification.objects.create(
                 user=user,
-                content=f"An alert has been created near your location: {
-                    alert.post.title}",
+                content=f"An alert has been created near your location: {alert.post.title}",
                 post=alert.post,
                 created_at=timezone.now(),
                 is_alert=True,
                 is_seen=False
             )
 
-            send_sms(user.phone_no, f"An alert has been created near your location: {
-                     alert.post.title}")
+            send_sms(user.phone_no, f"An alert has been created near your location: {alert.post.title}")
 
         return Response({"message": "Alert created and notifications sent.", "alert": serializer.data},
                         status=status.HTTP_201_CREATED)
 
     # If the data is invalid, return a 400 response with the errors
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 @api_view(['GET'])
 def get_all_alerts(request):
@@ -714,3 +731,29 @@ def blight_time_series(request):
     }
 
     return Response(data)
+
+
+
+@api_view(['POST'])
+def create_pest(request):
+    serializer = PestSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(['GET'])
+def get_all_pests(request):
+    pests = Pest.objects.all()
+    serializer = PestSerializer(pests, many=True)
+    return Response(serializer.data)
+
+
+
+@api_view(['GET'])
+def get_unique_diseases(request):
+    unique_diseases = DiseaseStatistics.objects.values_list('disease', flat=True).distinct()
+    return Response({"unique_diseases": list(unique_diseases)})
+
+

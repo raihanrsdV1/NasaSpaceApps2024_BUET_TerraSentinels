@@ -165,4 +165,7 @@ urlpatterns = [
     
     path('disease-occurrence/', disease_occurrence, name='disease_occurrence'),
     path('blight-time-series/', blight_time_series, name='blight_time_series'),
+    path('pests/', get_all_pests, name='get_all_pests'),  # GET request to list all pests
+    path('pests/create/', create_pest, name='create_pest'),  # POST request to create a new pest
+    path('diseases/unique/', get_unique_diseases, name='get_unique_diseases'),
 ]

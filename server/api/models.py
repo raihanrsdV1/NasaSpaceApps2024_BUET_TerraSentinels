@@ -100,6 +100,7 @@ class Rating(models.Model):
 class Alert(models.Model):
     post = models.OneToOneField(Post, on_delete=models.CASCADE)  # Link to Post
     alert_type = models.CharField(max_length=100)  # Type of alert (can be various alert types)
+    alert_reason = models.TextField(default="None")  # Reason for the alert
     alert_location_lat = models.FloatField()  # Latitude of the alert's location
     alert_location_lon = models.FloatField()  # Longitude of the alert's location
     alert_region = models.CharField(max_length=255)  # Region for the alert
@@ -232,3 +233,11 @@ class Task(models.Model):
     def __str__(self):
         return self.task  # String representation of the task
 
+
+class Pest(models.Model):
+    name = models.CharField(max_length=255)
+    gene = models.CharField(max_length=255)
+    typical_region = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
